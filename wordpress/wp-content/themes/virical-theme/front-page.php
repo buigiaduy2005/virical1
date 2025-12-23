@@ -7,62 +7,41 @@
 
 get_header(); ?>
 
-<!-- Hero Slider -->
-<section class="hero-slider-section">
-    <div class="hero-slider owl-carousel">
-        <?php
-        // Get slider posts
-        $slider_args = array(
-            'post_type'      => 'aura_slider',
-            'posts_per_page' => -1,
-            'orderby'        => 'menu_order',
-            'order'          => 'ASC',
-            'post_status'    => 'publish'
-        );
-        
-        $slider_query = new WP_Query( $slider_args );
-        
-        if ( $slider_query->have_posts() ) :
-            while ( $slider_query->have_posts() ) : $slider_query->the_post();
-                $slide_image = get_the_post_thumbnail_url( get_the_ID(), 'full' );
-                $slide_subtitle = get_post_meta( get_the_ID(), '_slide_subtitle', true );
-                $box_title = get_post_meta( get_the_ID(), '_box_title', true );
-                $slide_link = get_post_meta( get_the_ID(), '_slide_link', true );
-                
-                if ( $slide_image ) : ?>
-                    <div class="item" style="background-image: url('<?php echo esc_url( $slide_image ); ?>');">
-                        <?php if ( $slide_link ) : ?>
-                            <a href="<?php echo esc_url( $slide_link ); ?>" class="slide-link">
-                        <?php endif; ?>
-                        
-                        <div class="slide-overlay">
-                            <div class="slide-content">
-                                <?php if ( $slide_subtitle ) : ?>
-                                    <h2 class="slide-title"><?php echo esc_html( $slide_subtitle ); ?></h2>
-                                <?php endif; ?>
-                                
-                            </div>
-                        </div>
-                        
-                        <?php if ( $slide_link ) : ?>
-                            </a>
-                        <?php endif; ?>
-                    </div>
-                <?php endif;
-            endwhile;
-            wp_reset_postdata();
-        else : ?>
-            <!-- Default slides if no custom slides exist -->
-            <div class="item" style="background-image: url('<?php echo get_template_directory_uri(); ?>/assets/images/2022_collection-Aura.jpg');">
-                <div class="slide-overlay">
-                    <div class="slide-content">
-                        <h2 class="slide-title">BỘ SƯU TẬP 2022</h2>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
+<!-- Hero Video Section (Controlled by Top Banner Settings) -->
+<?php
+$top_banner_active = get_option('virical_top_banner_active', '1');
+$banner_video = get_option('virical_top_banner_video', '');
+$banner_image = get_option('virical_top_banner_image', ''); // Fallback image
+
+if ($top_banner_active == '1') : ?>
+<section class="hero-video-section" style="position: relative; height: 100vh; overflow: hidden; background: #000;">
+    <?php if (!empty($banner_video)) : ?>
+        <video autoplay muted loop playsinline style="position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; transform: translate(-50%, -50%); object-fit: cover; z-index: 1;">
+            <source src="<?php echo esc_url($banner_video); ?>" type="video/mp4">
+        </video>
+    <?php elseif (!empty($banner_image)) : ?>
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('<?php echo esc_url($banner_image); ?>'); background-size: cover; background-position: center; z-index: 1;"></div>
+    <?php else: ?>
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a1a; display: flex; align-items: center; justify-content: center; z-index: 1;">
+            <h2 style="color: rgba(255,255,255,0.2); font-size: 2rem;">VIRICAL LIGHTING</h2>
+        </div>
+    <?php endif; ?>
+    
+    <div class="video-overlay" style="position: absolute; inset: 0; background: rgba(0,0,0,0.2); z-index: 2;"></div>
+    
+    <?php
+    $banner_title = get_option('virical_top_banner_title', 'VIRICAL');
+    $banner_subtitle = get_option('virical_top_banner_subtitle', 'FEELING LIGHT');
+    ?>
+    <div class="hero-content" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3; text-align: center; width: 100%; padding: 0 20px;">
+        <h2 style="color: #fff; font-size: 4rem; font-weight: 300; letter-spacing: 5px; margin-bottom: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);"><?php echo esc_html($banner_title); ?></h2>
+        <p style="color: #fff; font-size: 1.2rem; letter-spacing: 3px; font-weight: 300; text-shadow: 0 2px 5px rgba(0,0,0,0.5);"><?php echo esc_html($banner_subtitle); ?></p>
     </div>
 </section>
+<?php endif; ?>
+
+<!-- Phone Reveal 3D Effect Section -->
+<?php get_template_part('template-parts/section-phone-reveal'); ?>
 
 <!-- About Section - Enhanced -->
 <section class="content-section about-section">
@@ -206,23 +185,10 @@ if ( $products_query->have_posts() ) : ?>
     <?php wp_reset_postdata();
 endif; ?>
 
-<!-- Categories -->
-<section class="categories">
-    <a href="<?php echo home_url('/indoor/'); ?>" class="category">
-        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/2203-lamps-arkoslight-1024x576.jpg" alt="Indoor">
-        <div class="category-overlay">
-            <h3 class="category-title">INDOOR</h3>
-            <span class="category-arrow">→</span>
-        </div>
-    </a>
-    <a href="<?php echo home_url('/outdoor/'); ?>" class="category">
-        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/2203-surface-arkoslight-1024x576.jpg" alt="Outdoor">
-        <div class="category-overlay">
-            <h3 class="category-title">OUTDOOR</h3>
-            <span class="category-arrow">→</span>
-        </div>
-    </a>
-</section>
+
+
+<!-- Featured Projects List Section -->
+<?php get_template_part('template-parts/section-projects-list'); ?>
 
 <!-- Featured Products 3D Carousel -->
 <?php
@@ -307,104 +273,6 @@ if ( $equipment_query->have_posts() ) :
 endif; 
 ?>
 
-<!-- Projects -->
-<?php
-$projects_args = array(
-    'post_type'      => 'aura_project',
-    'posts_per_page' => -1,
-    'meta_key'       => '_featured',
-    'orderby'        => array(
-        'meta_value' => 'DESC',
-        'date'       => 'DESC'
-    ),
-    'post_status'    => 'publish'
-);
-
-$projects_query = new WP_Query( $projects_args );
-
-if ( $projects_query->have_posts() ) : ?>
-    <section class="featured-projects-section">
-        <div class="container">
-            <div class="section-header">
-                <h3 class="section-subtitle">PROJECTS</h3>
-                <h2 class="section-title"><?php echo esc_html( get_theme_mod( 'aura_projects_title', 'DỰ ÁN TIÊU BIỂU' ) ); ?></h2>
-                <div class="section-divider"></div>
-            </div>
-            
-            <div class="projects-slider-wrapper">
-                <div class="projects-slider owl-carousel">
-                    <?php while ( $projects_query->have_posts() ) : $projects_query->the_post(); 
-                        $project_location = get_post_meta( get_the_ID(), '_project_location', true );
-                        $project_year = get_post_meta( get_the_ID(), '_project_year', true );
-                        $project_image = get_the_post_thumbnail_url( get_the_ID(), 'full' );
-                    ?>
-                        <div class="project-slide">
-                            <div class="project-slide-container">
-                                <div class="project-slide-bg" style="background-image: url('<?php echo esc_url( $project_image ?: get_template_directory_uri() . '/assets/images/placeholder-project.jpg' ); ?>');">
-                                    <div class="project-slide-overlay"></div>
-                                </div>
-                                
-                                <div class="project-slide-content">
-                                    <div class="project-meta">
-                                        <span class="project-category">Dự án</span>
-                                    </div>
-                                    <h2 class="project-slide-title"><?php the_title(); ?></h2>
-                                    
-                                    <?php if ( has_excerpt() ) : ?>
-                                        <div class="project-slide-desc">
-                                            <?php echo get_the_excerpt(); ?>
-                                        </div>
-                                    <?php endif; ?>
-                                    
-                                    <div class="project-slide-info">
-                                        <div class="info-row">
-                                            <div class="info-item">
-                                                <div class="info-divider-top"></div>
-                                                <div class="info-content">
-                                                    <span class="info-label">CHỦ ĐẦU TƯ</span>
-                                                    <span class="info-value"><?php echo esc_html( $project_location ?: 'N/A' ); ?></span>
-                                                </div>
-                                                <div class="info-divider-bottom"></div>
-                                            </div>
-                                            
-                                            <div class="info-item">
-                                                <div class="info-divider-top"></div>
-                                                <div class="info-content">
-                                                    <span class="info-label">NĂM</span>
-                                                    <span class="info-value"><?php echo esc_html( $project_year ?: date('Y') ); ?></span>
-                                                </div>
-                                                <div class="info-divider-bottom"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <a href="<?php the_permalink(); ?>" class="project-slide-link">
-                                        <span>Xem chi tiết</span>
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endwhile; ?>
-                </div>
-                
-                <!-- Custom Navigation -->
-                <div class="projects-nav">
-                    <button class="projects-prev"><i class="fa fa-chevron-left"></i></button>
-                    <button class="projects-next"><i class="fa fa-chevron-right"></i></button>
-                </div>
-            </div>
-            
-            <div class="projects-cta">
-                <a href="<?php echo get_post_type_archive_link( 'aura_project' ); ?>" class="btn-view-all">
-                    Xem tất cả dự án
-                </a>
-            </div>
-        </div>
-    </section>
-    <?php wp_reset_postdata();
-endif; ?>
-
 <!-- Styles specific to this page -->
 <style>
 /* Aura Dynamic Design Styles */
@@ -418,6 +286,18 @@ body {
     font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     overflow-x: hidden;
     background: #fff;
+}
+
+/* Top Banner Section */
+.top-banner-section {
+    width: 100%;
+    overflow: hidden;
+}
+
+.top-banner-wrapper img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 /* Hero Slider Section */
@@ -712,55 +592,159 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Categories */
-.categories {
-    display: flex;
-    height: 600px;
-}
-
-.category {
-    flex: 1;
-    position: relative;
+/* Featured Projects Section */
+.projects-section {
+    background: #f8f8f8;
+    padding: 80px 0;
     overflow: hidden;
-    text-decoration: none;
 }
 
-.category img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.projects-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
-.category-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
+.projects-title {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.projects-title h2 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 400;
+    letter-spacing: 2px;
+}
+
+.projects-title p {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.project-showcase {
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    color: #fff;
-    transition: background 0.3s;
+    gap: 60px;
+    margin-bottom: 80px;
 }
 
-.category:hover .category-overlay {
-    background: rgba(0,0,0,0.6);
+.project-showcase:nth-child(even) {
+    flex-direction: row-reverse;
 }
 
-.category-title {
-    font-size: 50px;
-    font-weight: 300;
-    letter-spacing: 8px;
+.project-info {
+    flex: 1;
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: all 0.8s ease;
+}
+
+.project-info.animate {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.project-showcase:nth-child(even) .project-info {
+    transform: translateX(50px);
+}
+
+.project-showcase:nth-child(even) .project-info.animate {
+    transform: translateX(0);
+}
+
+.project-info h3 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 400;
+}
+
+.project-meta {
+    font-size: 0.9rem;
+    color: #888;
     margin-bottom: 20px;
 }
 
-.category-arrow {
-    font-size: 30px;
-    transition: transform 0.3s;
+.project-info p {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 25px;
 }
 
-.category:hover .category-arrow {
-    transform: translateX(10px);
+.project-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #333;
+    color: #fff;
+    text-decoration: none;
+    transition: background 0.3s;
+    border-radius: 4px;
+}
+
+.project-btn:hover {
+    background: #555;
+}
+
+.project-image {
+    flex: 1;
+    opacity: 0;
+    transform: translateX(50px);
+    transition: all 0.8s ease 0.2s;
+}
+
+.project-image.animate {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.project-showcase:nth-child(even) .project-image {
+    transform: translateX(-50px);
+}
+
+.project-showcase:nth-child(even) .project-image.animate {
+    transform: translateX(0);
+}
+
+.project-image img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .project-showcase,
+    .project-showcase:nth-child(even) {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .project-info,
+    .project-showcase:nth-child(even) .project-info,
+    .project-image,
+    .project-showcase:nth-child(even) .project-image {
+        transform: translateY(30px);
+    }
+    
+    .project-info.animate,
+    .project-showcase:nth-child(even) .project-info.animate,
+    .project-image.animate,
+    .project-showcase:nth-child(even) .project-image.animate {
+        transform: translateY(0);
+    }
+    
+    .projects-title h2 {
+        font-size: 1.8rem;
+    }
+    
+    .project-info h3 {
+        font-size: 1.5rem;
+    }
 }
 
 /* Featured Projects Section */
@@ -1202,6 +1186,7 @@ body {
     align-items: center;
     justify-content: center;
     transform-style: preserve-3d;
+    overflow: visible;
 }
 
 .carousel-3d-item {
@@ -1285,47 +1270,58 @@ body {
     transform: translateY(0);
 }
 
-/* Carousel Positioning - 3D Cylindrical Effect */
-.carousel-3d-item[data-position="center"] {
-    z-index: 5;
-    opacity: 1;
-    transform: translateX(0) translateZ(0) scale(1.2);
-    filter: blur(0);
-}
-
-.carousel-3d-item[data-position="left-1"] {
-    z-index: 4;
-    opacity: 0.5;
-    transform: translateX(-380px) translateZ(-200px) rotateY(15deg) scale(0.85);
-    filter: blur(0.5px);
-}
-
-.carousel-3d-item[data-position="left-2"] {
-    z-index: 3;
-    opacity: 0.3;
-    transform: translateX(-680px) translateZ(-350px) rotateY(25deg) scale(0.7);
-    filter: blur(1px);
-}
-
-.carousel-3d-item[data-position="right-1"] {
-    z-index: 4;
-    opacity: 0.5;
-    transform: translateX(380px) translateZ(-200px) rotateY(-15deg) scale(0.85);
-    filter: blur(0.5px);
-}
-
-.carousel-3d-item[data-position="right-2"] {
-    z-index: 3;
-    opacity: 0.3;
-    transform: translateX(680px) translateZ(-350px) rotateY(-25deg) scale(0.7);
-    filter: blur(1px);
-}
-
-.carousel-3d-item[data-position="hidden"] {
+/* Carousel Positioning - Curved Arc Effect */
+.carousel-3d-item[data-index="0"] { 
+    transform: translateX(-600px) rotateY(-35deg) translateZ(-150px) scale(0.75);
+    opacity: 0.4;
     z-index: 1;
+}
+
+.carousel-3d-item[data-index="1"] { 
+    transform: translateX(-400px) rotateY(-25deg) translateZ(-80px) scale(0.85);
+    opacity: 0.6;
+    z-index: 2;
+}
+
+.carousel-3d-item[data-index="2"] { 
+    transform: translateX(-200px) rotateY(-12deg) translateZ(-30px) scale(0.95);
+    opacity: 0.8;
+    z-index: 3;
+}
+
+.carousel-3d-item[data-index="3"] { 
+    transform: translateX(0) rotateY(0deg) translateZ(0px) scale(1.1);
+    opacity: 1;
+    z-index: 5;
+}
+
+.carousel-3d-item[data-index="4"] { 
+    transform: translateX(200px) rotateY(12deg) translateZ(-30px) scale(0.95);
+    opacity: 0.8;
+    z-index: 3;
+}
+
+.carousel-3d-item[data-index="5"] { 
+    transform: translateX(400px) rotateY(25deg) translateZ(-80px) scale(0.85);
+    opacity: 0.6;
+    z-index: 2;
+}
+
+.carousel-3d-item[data-index="6"] { 
+    transform: translateX(600px) rotateY(35deg) translateZ(-150px) scale(0.75);
+    opacity: 0.4;
+    z-index: 1;
+}
+
+/* Hide items beyond visible range */
+.carousel-3d-item[data-index="7"],
+.carousel-3d-item[data-index="8"],
+.carousel-3d-item[data-index="9"],
+.carousel-3d-item[data-index="10"] {
     opacity: 0;
-    transform: translateX(0) translateZ(-500px) scale(0.5);
     pointer-events: none;
+    transform: translateX(800px) translateZ(-300px) scale(0.5);
+    z-index: 0;
 }
 
 /* Navigation Controls */
@@ -1593,7 +1589,7 @@ jQuery(document).ready(function($) {
         totalItems: $('.carousel-3d-item').length,
         isAnimating: false,
         autoplayInterval: null,
-        autoplayDelay: 4000,
+        autoplayDelay: 8000, // Changed from 4000ms to 8000ms (8 seconds)
         
         init: function() {
             this.updatePositions();
@@ -1605,26 +1601,51 @@ jQuery(document).ready(function($) {
             const items = $('.carousel-3d-item');
             const total = this.totalItems;
             
+            console.log('Updating positions, total items:', total, 'current index:', this.currentIndex);
+            
             items.each((index, item) => {
                 const $item = $(item);
-                const diff = index - this.currentIndex;
-                let position;
+                // Calculate position relative to current center
+                let diff = index - this.currentIndex;
+                
+                // Normalize diff to be between -total/2 and +total/2
+                if (diff > total / 2) diff -= total;
+                if (diff < -total / 2) diff += total;
+                
+                // Calculate curved arc position based on diff
+                let x, rotateY, z, scale, opacity, zIndex;
                 
                 if (diff === 0) {
-                    position = 'center';
-                } else if (diff === 1 || diff === -(total - 1)) {
-                    position = 'right-1';
-                } else if (diff === 2 || diff === -(total - 2)) {
-                    position = 'right-2';
-                } else if (diff === -1 || diff === (total - 1)) {
-                    position = 'left-1';
-                } else if (diff === -2 || diff === (total - 2)) {
-                    position = 'left-2';
+                    // Center item
+                    x = 0;
+                    rotateY = 0;
+                    z = 0;
+                    scale = 1.15;
+                    opacity = 1;
+                    zIndex = 10;
                 } else {
-                    position = 'hidden';
+                    // Side items - create curved arc
+                    const absDiff = Math.abs(diff);
+                    const direction = diff > 0 ? 1 : -1;
+                    
+                    // Calculate position along arc
+                    x = direction * (200 + absDiff * 180);
+                    rotateY = direction * (10 + absDiff * 12);
+                    z = -(absDiff * 60);
+                    scale = Math.max(0.7, 1 - absDiff * 0.15);
+                    opacity = Math.max(0.3, 1 - absDiff * 0.25);
+                    zIndex = 10 - absDiff;
                 }
                 
-                $item.attr('data-position', position);
+                // Apply transforms
+                $item.css({
+                    'transform': `translateX(${x}px) rotateY(${rotateY}deg) translateZ(${z}px) scale(${scale})`,
+                    'opacity': opacity,
+                    'z-index': zIndex,
+                    'pointer-events': opacity > 0.2 ? 'auto' : 'none'
+                });
+                
+                console.log(`Item ${index}: diff=${diff}, x=${x}, rotateY=${rotateY}, scale=${scale}`);
             });
             
             // Update indicators
@@ -1760,8 +1781,52 @@ jQuery(document).ready(function($) {
     };
     
     // Initialize 3D Carousel
-    if ($('.featured-products-carousel-section').length) {
+    if ($('.carousel-3d-item').length > 0) {
+        console.log('Initializing 3D Carousel with', $('.carousel-3d-item').length, 'items');
         carousel3D.init();
+        console.log('3D Carousel initialized with curved arc effect');
+    } else {
+        console.log('No carousel items found');
+    }
+    
+    // Featured Projects Scroll Animation
+    function animateOnScroll() {
+        const projectElements = document.querySelectorAll('.project-info, .project-image');
+        
+        projectElements.forEach(element => {
+            const elementTop = element.getBoundingClientRect().top;
+            const elementVisible = 150;
+            
+            if (elementTop < window.innerHeight - elementVisible) {
+                element.classList.add('animate');
+            }
+        });
+    }
+    
+    // Use IntersectionObserver for better performance
+    if ('IntersectionObserver' in window) {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all project elements
+        document.querySelectorAll('.project-info, .project-image').forEach(element => {
+            observer.observe(element);
+        });
+    } else {
+        // Fallback for older browsers
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+        animateOnScroll(); // Initial check
     }
 });
 </script>

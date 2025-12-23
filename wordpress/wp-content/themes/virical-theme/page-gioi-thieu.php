@@ -223,13 +223,14 @@ $partners = get_option('aura_about_partners', array());
     --virical-light-gray: #f9f8f8;
     --virical-gray: #f2f5f7;
     --virical-text-gray: #424242;
-    --virical-black: #000000;
+    --virical-black: #E7E7E7; /* Light Gray-White */
     --virical-gold: #d4af37;
+    --virical-text-dark: #333333;
 }
 
 body.page-template-page-gioi-thieu {
     background-color: var(--virical-black);
-    color: var(--virical-white);
+    color: var(--virical-text-dark);
     margin: 0;
     padding: 0;
 }
@@ -321,7 +322,7 @@ body.page-template-page-gioi-thieu {
     width: 100%;
     height: auto;
     border-radius: 0;
-    filter: brightness(0.9);
+    filter: brightness(1);
 }
 
 .image-decoration {
@@ -341,13 +342,13 @@ body.page-template-page-gioi-thieu {
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 30px;
-    color: var(--virical-white);
+    color: var(--virical-text-dark);
 }
 
 .intro-text {
     font-size: 16px;
     line-height: 1.8;
-    color: rgba(255, 255, 255, 0.8);
+    color: #555555;
 }
 
 /* Story Sections */
@@ -360,7 +361,7 @@ body.page-template-page-gioi-thieu {
 }
 
 .story-section:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .story-wrapper {
@@ -400,19 +401,19 @@ body.page-template-page-gioi-thieu {
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 30px;
-    color: var(--virical-white);
+    color: var(--virical-text-dark);
 }
 
 .story-text {
     font-size: 16px;
     line-height: 1.8;
-    color: rgba(255, 255, 255, 0.8);
+    color: #555555;
 }
 
 /* Values Section */
 .values-section {
     padding: 120px 0;
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .section-header {
@@ -427,7 +428,7 @@ body.page-template-page-gioi-thieu {
     text-transform: uppercase;
     letter-spacing: 3px;
     margin-bottom: 20px;
-    color: var(--virical-white);
+    color: var(--virical-text-dark);
 }
 
 .section-line {
@@ -446,15 +447,17 @@ body.page-template-page-gioi-thieu {
 .value-item {
     text-align: center;
     padding: 50px 30px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--virical-white);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
 .value-item:hover {
     transform: translateY(-10px);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--virical-white);
     border-color: var(--virical-gold);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
 }
 
 .value-icon {
@@ -470,13 +473,13 @@ body.page-template-page-gioi-thieu {
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 20px;
-    color: var(--virical-white);
+    color: var(--virical-text-dark);
 }
 
 .value-description {
     font-size: 15px;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.7);
+    color: #666666;
 }
 
 /* Team Section */
@@ -563,7 +566,7 @@ body.page-template-page-gioi-thieu {
     font-size: 20px;
     font-weight: 600;
     margin-bottom: 5px;
-    color: var(--virical-white);
+    color: var(--virical-text-dark);
 }
 
 .member-position {
@@ -577,13 +580,13 @@ body.page-template-page-gioi-thieu {
 .member-bio {
     font-size: 14px;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.7);
+    color: #666666;
 }
 
 /* Achievements Section */
 .achievements-section {
     padding: 120px 0;
-    background: linear-gradient(135deg, rgba(217, 73, 72, 0.1) 0%, rgba(233, 51, 51, 0.1) 100%);
+    background: rgba(217, 73, 72, 0.05);
     position: relative;
 }
 
@@ -635,12 +638,12 @@ body.page-template-page-gioi-thieu {
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 10px;
-    color: var(--virical-white);
+    color: var(--virical-text-dark);
 }
 
 .achievement-description {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
+    color: #666666;
 }
 
 /* Partners Section */
@@ -676,12 +679,13 @@ body.page-template-page-gioi-thieu {
 .partner-logo {
     height: 80px;
     width: auto;
-    filter: brightness(0) invert(1);
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
+    filter: grayscale(1);
+    opacity: 0.5;
+    transition: all 0.3s ease;
 }
 
 .partner-logo:hover {
+    filter: grayscale(0);
     opacity: 1;
 }
 

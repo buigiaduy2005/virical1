@@ -6,17 +6,23 @@
  * @package Virical_Theme
  */
 
+// Get admin settings
+$hero_bg_image = get_option('smart_hero_bg_image', get_template_directory_uri() . '/assets/images/2203-tracklights-arkoslight-1024x576.jpg');
+$use_gradient = get_option('smart_hero_use_gradient', '0');
+$gradient_start = get_option('smart_hero_gradient_start', '#ffffff');
+$gradient_end = get_option('smart_hero_gradient_end', '#f5f5f5');
+
 get_header(); ?>
 
 <div class="smart-solutions-page">
 
     <!-- Hero Section -->
-    <section class="smart-hero">
+    <section class="smart-hero <?php echo $use_gradient === '1' ? 'has-gradient' : 'no-gradient'; ?>" style="<?php echo $use_gradient === '1' ? 'background: linear-gradient(135deg, ' . esc_attr($gradient_start) . ' 0%, ' . esc_attr($gradient_end) . ' 100%);' : 'background: transparent;'; ?>">
         <div class="smart-hero-overlay"></div>
         <div class="smart-hero-content">
             <div class="container">
                 <span class="smart-badge">CÔNG NGHỆ TIÊN TIẾN</span>
-                <h1 class="smart-hero-title">Giải Pháp Chiếu Sáng Thông Minh</h1>
+                <h1 class="smart-hero-title">Giải Pháp Thông Minh</h1>
                 <p class="smart-hero-subtitle">Kiểm soát ánh sáng hoàn hảo, tiết kiệm năng lượng, tạo không gian sống hiện đại</p>
                 <div class="smart-hero-buttons">
                     <a href="#features" class="btn-primary">Khám Phá Ngay</a>
@@ -321,7 +327,7 @@ get_header(); ?>
     min-height: 80vh;
     display: flex;
     align-items: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    justify-content: center;
     overflow: hidden;
 }
 
@@ -332,14 +338,14 @@ get_header(); ?>
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('<?php echo get_template_directory_uri(); ?>/assets/images/2203-tracklights-arkoslight-1024x576.jpg') center/cover;
-    opacity: 0.15;
+    background: url('<?php echo esc_url($hero_bg_image); ?>') center/cover;
+    opacity: 1.0;
 }
 
 .smart-hero-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: transparent;
 }
 
 .smart-hero-content {
@@ -348,6 +354,24 @@ get_header(); ?>
     text-align: center;
     color: white;
     padding: 60px 20px;
+    width: 100%;
+}
+
+.smart-hero-title {
+    font-size: 56px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.2;
+    color: white !important;
+}
+
+.smart-hero-subtitle {
+    font-size: 20px;
+    max-width: 700px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+    opacity: 0.95;
+    color: white !important;
 }
 
 .smart-badge {
@@ -361,21 +385,7 @@ get_header(); ?>
     font-weight: 500;
     margin-bottom: 20px;
     backdrop-filter: blur(10px);
-}
-
-.smart-hero-title {
-    font-size: 56px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    line-height: 1.2;
-}
-
-.smart-hero-subtitle {
-    font-size: 20px;
-    max-width: 700px;
-    margin: 0 auto 40px;
-    line-height: 1.6;
-    opacity: 0.95;
+    color: white !important;
 }
 
 .smart-hero-buttons {

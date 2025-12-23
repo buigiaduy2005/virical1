@@ -4,7 +4,7 @@
  */
 
 // Add admin menu
-// add_action('admin_menu', 'virical_add_projects_menu');
+add_action('admin_menu', 'virical_add_projects_menu');
 
 function virical_add_projects_menu() {
     add_menu_page(

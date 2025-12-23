@@ -1,0 +1,38 @@
+-- Create sample project
+INSERT INTO wp_posts (
+    post_author,
+    post_date,
+    post_date_gmt,
+    post_content,
+    post_title,
+    post_excerpt,
+    post_status,
+    comment_status,
+    ping_status,
+    post_name,
+    post_modified,
+    post_modified_gmt,
+    post_parent,
+    guid,
+    menu_order,
+    post_type,
+    comment_count
+) VALUES (
+    1,
+    NOW(),
+    UTC_TIMESTAMP(),
+    'Dự án chiếu sáng cao cấp cho villa tại Marina Ecopark. Sử dụng công nghệ LED tiên tiến, tạo không gian sống ấm cúng và tinh tế với hệ thống điều khiển thông minh.',
+    'Villa Marina Ecopark',
+    'Thiết kế hệ thống chiếu sáng hiện đại cho villa cao cấp tại Marina Ecopark.',
+    'publish',
+    'closed',
+    'closed',
+    'villa-marina-ecopark',
+    NOW(),
+    UTC_TIMESTAMP(),
+    0,
+    '',
+    0,
+    'aura_project',
+    0
+);

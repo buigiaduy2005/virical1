@@ -72,8 +72,8 @@ function virical_init_configuration_system() {
         'class-virical-template-manager.php',
         'class-virical-navigation-manager.php',
         'class-virical-routing-manager.php',
-        'class-indoor-admin-manager.php',
-        'class-outdoor-admin-manager.php'
+        'contact-admin.php',
+        'footer-admin-manager.php'
     ];
     
     foreach ($managers as $file) {
@@ -98,6 +98,16 @@ function virical_init_configuration_system() {
     }
 }
 add_action('init', 'virical_init_configuration_system');
+
+/**
+ * Phone Reveal Effect Settings
+ */
+require_once get_template_directory() . '/includes/phone-reveal-settings.php';
+
+/**
+ * Smart Solutions Page Admin Settings
+ */
+require_once get_template_directory() . '/includes/smart-solutions-admin.php';
 
 /**
  * REGISTER EQUIPMENT POST TYPE (EMBEDDED)
@@ -140,6 +150,61 @@ function virical_register_equipment_post_type() {
     register_post_type( 'equipment_item', $args );
 }
 add_action( 'init', 'virical_register_equipment_post_type', 0 );
+
+/**
+ * REGISTER PROJECT POST TYPE
+ */
+function virical_register_project_post_type() {
+    $labels = array(
+        'name'                  => 'Dự Án',
+        'singular_name'         => 'Dự Án',
+        'menu_name'             => 'Dự Án',
+        'name_admin_bar'        => 'Dự Án',
+        'add_new'               => 'Thêm Mới',
+        'add_new_item'          => 'Thêm Dự Án Mới',
+        'new_item'              => 'Dự Án Mới',
+        'edit_item'             => 'Sửa Dự Án',
+        'view_item'             => 'Xem Dự Án',
+        'all_items'             => 'Tất Cả Dự Án',
+        'search_items'          => 'Tìm Dự Án',
+        'parent_item_colon'     => 'Dự Án Cha:',
+        'not_found'             => 'Không tìm thấy dự án.',
+        'not_found_in_trash'    => 'Không có dự án trong thùng rác.',
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => array( 'slug' => 'du-an' ),
+        'capability_type'    => 'post',
+        'has_archive'        => true,
+        'hierarchical'       => false,
+        'menu_position'      => 26,
+        'menu_icon'          => 'dashicons-building',
+        'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ),
+    );
+
+    register_post_type( 'aura_project', $args );
+    
+    // Register Taxonomy for Projects
+    register_taxonomy( 'project_category', 'aura_project', array(
+        'labels' => array(
+            'name' => 'Loại Công Trình',
+            'singular_name' => 'Loại Công Trình',
+            'menu_name' => 'Loại Công Trình',
+        ),
+        'public' => true,
+        'hierarchical' => true,
+        'show_ui' => true,
+        'rewrite' => array('slug' => 'loai-cong-trinh'),
+    ));
+}
+add_action( 'init', 'virical_register_project_post_type', 0 );
+
 
 /**
  * EQUIPMENT META BOXES
@@ -240,6 +305,17 @@ if (file_exists(get_template_directory() . '/includes/widgets.php')) {
 if (file_exists(get_template_directory() . '/includes/customizer.php')) {
     require_once get_template_directory() . '/includes/customizer.php';
 }
+
+require_once get_template_directory() . '/includes/top-banner-admin.php';
+require_once get_template_directory() . '/includes/products-admin.php';
+require_once get_template_directory() . '/includes/projects-admin.php';
+// Global Admin Search
+if (file_exists(get_template_directory() . '/includes/admin-global-search.php')) {
+    require_once get_template_directory() . '/includes/admin-global-search.php';
+}
+
+// Hero Slider Post Type
+require_once get_template_directory() . '/includes/slider-post-type.php';
 
 /**
  * Custom rewrite rules

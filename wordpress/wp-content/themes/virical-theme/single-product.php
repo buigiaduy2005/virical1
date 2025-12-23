@@ -39,10 +39,15 @@ $category = $wpdb->get_row($wpdb->prepare(
     $product->category
 ));
 
-// Decode JSON fields
-$features = json_decode($product->features, true) ?: [];
-$specifications = json_decode($product->specifications, true) ?: [];
-$gallery = json_decode($product->gallery, true) ?: [];
+// Decode JSON fields safely
+$features = !empty($product->features) ? json_decode($product->features, true) : [];
+if (!is_array($features)) $features = [];
+
+$specifications = !empty($product->specifications) ? json_decode($product->specifications, true) : [];
+if (!is_array($specifications)) $specifications = [];
+
+$gallery = !empty($product->gallery) ? json_decode($product->gallery, true) : [];
+if (!is_array($gallery)) $gallery = [];
 
 // Default image if not set
 $default_image = get_template_directory_uri() . '/assets/images/default-product.jpg';
@@ -367,8 +372,7 @@ if (empty($gallery)) {
     margin-top: 40px;
 }
 
-.btn-primary,
-.btn-secondary {
+.btn-primary, .btn-secondary {
     padding: 15px 40px;
     font-size: 14px;
     font-weight: 600;
@@ -617,74 +621,221 @@ if (empty($gallery)) {
     line-height: 1.6;
 }
 
-/* Related Products */
+/* Related Products - 3D Carousel */
 .related-products-section {
-    background: #ffffff;
-    padding: 80px 0;
+    background: #1a1a1a;
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
 }
 
 .related-products-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
-.related-products-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
-    margin-top: 40px;
+.section-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: 300;
+    color: #ffffff;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
 }
 
-.related-product-item {
-    background: #f8f9fa;
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: block;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+.section-subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #999;
+    letter-spacing: 2px;
+    margin-bottom: 60px;
+    text-transform: uppercase;
 }
 
-.related-product-item:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+/* 3D Carousel Container */
+.carousel-3d-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
 }
 
-.related-product-image {
+.carousel-3d-container {
     width: 100%;
-    height: 250px;
-    object-fit: cover;
-    background: #f8f9fa;
+    max-width: 1200px;
     overflow: hidden;
+    perspective: 2500px;
+    perspective-origin: center center;
 }
 
-.related-product-image img {
+.carousel-3d-track {
+    display: flex;
+    gap: 0;
+    padding: 80px 20px;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Carousel Items with Curved Arc Effect */
+.carousel-3d-item {
+    flex: 0 0 280px;
+    transform-style: preserve-3d;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+/* Create curved arc by rotating and translating each item */
+.carousel-3d-item:nth-child(1) { transform: rotateY(-30deg) translateZ(-100px) translateX(-50px); }
+.carousel-3d-item:nth-child(2) { transform: rotateY(-20deg) translateZ(-50px) translateX(-30px); }
+.carousel-3d-item:nth-child(3) { transform: rotateY(-10deg) translateZ(-20px) translateX(-15px); }
+.carousel-3d-item:nth-child(4) { transform: rotateY(0deg) translateZ(0px) translateX(0px); z-index: 10; }
+.carousel-3d-item:nth-child(5) { transform: rotateY(10deg) translateZ(-20px) translateX(15px); }
+.carousel-3d-item:nth-child(6) { transform: rotateY(20deg) translateZ(-50px) translateX(30px); }
+.carousel-3d-item:nth-child(7) { transform: rotateY(30deg) translateZ(-100px) translateX(50px); }
+.carousel-3d-item:nth-child(8) { transform: rotateY(40deg) translateZ(-150px) translateX(70px); opacity: 0.5; }
+
+/* Center item (4th) should be prominent */
+.carousel-3d-item:nth-child(4) .product-card-3d {
+    transform: scale(1.1);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7);
+}
+
+.product-card-3d {
+    display: block;
+    background: #2a2a2a;
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: all 0.4s ease;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    transform: translateZ(0);
+}
+
+.product-card-3d:hover {
+    transform: translateY(-15px) translateZ(50px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+.product-card-image {
+    width: 100%;
+    height: 220px;
+    background: #1a1a1a;
+    overflow: hidden;
+    position: relative;
+}
+
+.product-card-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.5s ease;
 }
 
-.related-product-item:hover .related-product-image img {
+.product-card-3d:hover .product-card-image img {
+    transform: scale(1.15);
+}
+
+.product-card-info {
+    padding: 25px 20px;
+    text-align: center;
+}
+
+.product-new-label {
+    color: #999;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    text-transform: lowercase;
+}
+
+.product-card-name {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    min-height: 40px;
+    line-height: 1.4;
+}
+
+.product-select-btn {
+    background: transparent;
+    border: 1px solid #4CAF50;
+    color: #4CAF50;
+    padding: 10px 30px;
+    border-radius: 25px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.product-select-btn:hover {
+    background: #4CAF50;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+}
+
+/* Navigation Buttons */
+.carousel-nav {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    backdrop-filter: blur(10px);
+    z-index: 10;
+}
+
+.carousel-nav:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
     transform: scale(1.1);
 }
 
-.related-product-info {
-    padding: 20px;
-}
-
-.related-product-name {
-    font-size: 18px;
-    font-weight: 500;
-    color: #212529;
-    margin-bottom: 10px;
-}
-
-.related-product-price {
-    color: var(--virical-gold);
+.carousel-nav i {
     font-size: 20px;
-    font-weight: 600;
+}
+
+/* Carousel Indicators */
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 50px;
+}
+
+.indicator {
+    width: 40px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.indicator.active {
+    background: #4CAF50;
+    width: 60px;
+}
+
+.indicator:hover {
+    background: rgba(255, 255, 255, 0.4);
 }
 
 /* Product Tabs in Info Section */
@@ -712,8 +863,7 @@ if (empty($gallery)) {
     margin-bottom: -1px;
 }
 
-.product-tabs .tab-link:hover,
-.product-tabs .tab-link.active {
+.product-tabs .tab-link:hover, .product-tabs .tab-link.active {
     color: var(--virical-gold);
     border-bottom-color: var(--virical-gold);
 }
@@ -831,8 +981,7 @@ if (empty($gallery)) {
     margin-top: 20px;
 }
 
-.cta-buttons .btn-primary,
-.cta-buttons .btn-secondary {
+.cta-buttons .btn-primary, .cta-buttons .btn-secondary {
     padding: 15px 30px;
 }
 
@@ -864,13 +1013,17 @@ if (empty($gallery)) {
         grid-template-columns: 1fr;
     }
     
-    .download-grid,
-    .applications-grid {
+    .download-grid, .applications-grid {
         grid-template-columns: repeat(2, 1fr);
     }
     
-    .related-products-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .carousel-3d-item {
+        flex: 0 0 240px;
+    }
+    
+    .carousel-nav {
+        width: 45px;
+        height: 45px;
     }
 }
 
@@ -883,9 +1036,7 @@ if (empty($gallery)) {
         height: 350px;
     }
     
-    .download-grid,
-    .applications-grid,
-    .related-products-grid {
+    .download-grid, .applications-grid {
         grid-template-columns: 1fr;
         gap: 20px;
     }
@@ -894,8 +1045,7 @@ if (empty($gallery)) {
         flex-direction: column;
     }
     
-    .btn-primary,
-    .btn-secondary {
+    .btn-primary, .btn-secondary {
         width: 100%;
         justify-content: center;
     }
@@ -903,6 +1053,37 @@ if (empty($gallery)) {
     .gallery-thumbs {
         overflow-x: auto;
         justify-content: flex-start;
+    }
+    
+    /* Carousel responsive */
+    .carousel-3d-item {
+        flex: 0 0 200px;
+    }
+    
+    .section-title {
+        font-size: 28px;
+    }
+    
+    .carousel-3d-wrapper {
+        gap: 15px;
+    }
+    
+    .carousel-nav {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .carousel-nav i {
+        font-size: 16px;
+    }
+    
+    .carousel-3d-track {
+        gap: 20px;
+        padding: 30px 10px;
+    }
+    
+    .product-card-info {
+        padding: 20px 15px;
     }
 }
 </style>
@@ -1195,59 +1376,85 @@ if (empty($gallery)) {
         </div>
     </section>
     
-    <!-- Related Products -->
+    <!-- Related Products Carousel 3D -->
     <section class="related-products-section">
         <div class="related-products-container">
-            <h2 class="section-title">Sản phẩm liên quan</h2>
+            <h2 class="section-title">SẢN PHẨM TIÊU BIỂU</h2>
+            <p class="section-subtitle">EQUIPMENT SELECTOR</p>
             
-            <div class="related-products-grid">
-                <?php
-                // Get related products from same category
-                $related_query = "SELECT * FROM {$wpdb->prefix}virical_products 
-                                 WHERE category = %s 
-                                 AND id != %d 
-                                 AND is_active = 1 
-                                 ORDER BY is_featured DESC, RAND() 
-                                 LIMIT 4";
+            <div class="carousel-3d-wrapper">
+                <button class="carousel-nav carousel-prev" onclick="scrollCarousel(-1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
                 
-                $related_products = $wpdb->get_results($wpdb->prepare($related_query, $product->category, $product->id));
+                <div class="carousel-3d-container">
+                    <div class="carousel-3d-track" id="carouselTrack">
+                        <?php
+                        // Get related products from same category
+                        $related_query = "SELECT * FROM {$wpdb->prefix}virical_products 
+                                         WHERE category = %s 
+                                         AND id != %d 
+                                         AND is_active = 1 
+                                         ORDER BY is_featured DESC, RAND() 
+                                         LIMIT 8";
+                        
+                        $related_products = $wpdb->get_results($wpdb->prepare($related_query, $product->category, $product->id));
+                        
+                        if (!empty($related_products)) {
+                            foreach ($related_products as $index => $related): ?>
+                                <div class="carousel-3d-item">
+                                    <a href="<?php echo home_url('/san-pham/' . $related->slug . '/'); ?>" class="product-card-3d">
+                                        <div class="product-card-image">
+                                            <?php if (!empty($related->image_url)): ?>
+                                                <img src="<?php echo esc_url($related->image_url); ?>" 
+                                                     alt="<?php echo esc_attr($related->name); ?>"
+                                                     onerror="this.src='https://via.placeholder.com/300x250/2a2a2a/666?text=No+Image'">
+                                            <?php else: ?>
+                                                <img src="https://via.placeholder.com/300x250/2a2a2a/666?text=No+Image" 
+                                                     alt="<?php echo esc_attr($related->name); ?>">
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="product-card-info">
+                                            <p class="product-new-label">new1</p>
+                                            <h3 class="product-card-name"><?php echo esc_html($related->name); ?></h3>
+                                            <button class="product-select-btn">SELECT</button>
+                                        </div>
+                                    </a>
+                                </div>
+                            <?php endforeach;
+                        } else {
+                            // Show placeholder products if no related products found
+                            for ($i = 1; $i <= 6; $i++):
+                                ?>
+                                <div class="carousel-3d-item">
+                                    <div class="product-card-3d">
+                                        <div class="product-card-image">
+                                            <img src="https://via.placeholder.com/300x250/2a2a2a/666?text=Product+<?php echo $i; ?>" 
+                                                 alt="Sản phẩm mẫu <?php echo $i; ?>">
+                                        </div>
+                                        <div class="product-card-info">
+                                            <p class="product-new-label">new<?php echo $i; ?></p>
+                                            <h3 class="product-card-name">Sản phẩm mẫu <?php echo $i; ?></h3>
+                                            <button class="product-select-btn">SELECT</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endfor;
+                        }
+                        ?>
+                    </div>
+                </div>
                 
-                if (!empty($related_products)) {
-                    foreach ($related_products as $related): ?>
-                        <a href="<?php echo home_url('/san-pham/' . $related->slug . '/'); ?>" class="related-product-item">
-                            <?php if (!empty($related->image_url)): ?>
-                                <img src="<?php echo esc_url($related->image_url); ?>" 
-                                     alt="<?php echo esc_attr($related->name); ?>" 
-                                     class="related-product-image"
-                                     onerror="this.src='https://via.placeholder.com/300x200/f0f0f0/999999?text=No+Image'">
-                            <?php else: ?>
-                                <img src="https://via.placeholder.com/300x200/f0f0f0/999999?text=No+Image" 
-                                     alt="<?php echo esc_attr($related->name); ?>" 
-                                     class="related-product-image">
-                            <?php endif; ?>
-                            <div class="related-product-info">
-                                <h3 class="related-product-name"><?php echo esc_html($related->name); ?></h3>
-                                <?php if ($related->price): ?>
-                                    <div class="related-product-price"><?php echo number_format($related->price, 0, ',', '.'); ?> VNĐ</div>
-                                <?php endif; ?>
-                            </div>
-                        </a>
-                    <?php endforeach;
-                } else {
-                    // Show placeholder products if no related products found
-                    for ($i = 1; $i <= 4; $i++): ?>
-                        <div class="related-product-item" style="cursor: default;">
-                            <img src="https://via.placeholder.com/300x200/f0f0f0/999999?text=S%E1%BA%A3n+ph%E1%BA%A9m+<?php echo $i; ?>" 
-                                 alt="Sản phẩm mẫu <?php echo $i; ?>" 
-                                 class="related-product-image">
-                            <div class="related-product-info">
-                                <h3 class="related-product-name">Sản phẩm mẫu <?php echo $i; ?></h3>
-                                <div class="related-product-price">Liên hệ</div>
-                            </div>
-                        </div>
-                    <?php endfor;
-                }
-                ?>
+                <button class="carousel-nav carousel-next" onclick="scrollCarousel(1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <!-- Carousel Indicators -->
+            <div class="carousel-indicators">
+                <span class="indicator active"></span>
+                <span class="indicator"></span>
+                <span class="indicator"></span>
             </div>
         </div>
     </section>
@@ -1329,6 +1536,93 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
+
+// 3D Carousel Navigation with Curved Arc
+let carouselPosition = 0;
+const carouselTrack = document.getElementById('carouselTrack');
+let carouselRotation = 0;
+
+function scrollCarousel(direction) {
+    if (!carouselTrack) return;
+    
+    // Rotate the entire carousel track to show different items
+    const rotationStep = 15; // degrees per item
+    carouselRotation += (direction * rotationStep);
+    
+    // Apply rotation to the track
+    carouselTrack.style.transform = `rotateY(${carouselRotation}deg)`;
+    
+    // Update position counter
+    carouselPosition += direction;
+    
+    // Update indicators
+    updateCarouselIndicators();
+}
+
+function updateCarouselIndicators() {
+    const indicators = document.querySelectorAll('.carousel-indicators .indicator');
+    const totalIndicators = indicators.length;
+    
+    // Calculate which indicator should be active based on rotation
+    const activeIndex = Math.abs(Math.floor((carouselRotation / 45) % totalIndicators));
+    
+    indicators.forEach((indicator, index) => {
+        indicator.classList.toggle('active', index === activeIndex);
+    });
+}
+
+// Auto-scroll carousel every 5 seconds
+let carouselAutoScroll = setInterval(() => {
+    if (carouselTrack && carouselTrack.children.length > 0) {
+        scrollCarousel(1);
+    }
+}, 5000);
+
+// Pause auto-scroll on hover
+const carouselWrapper = document.querySelector('.carousel-3d-wrapper');
+if (carouselWrapper) {
+    carouselWrapper.addEventListener('mouseenter', () => {
+        clearInterval(carouselAutoScroll);
+    });
+    
+    carouselWrapper.addEventListener('mouseleave', () => {
+        carouselAutoScroll = setInterval(() => {
+            if (carouselTrack && carouselTrack.children.length > 0) {
+                scrollCarousel(1);
+            }
+        }, 5000);
+    });
+}
+
+// Touch/Swipe support for mobile
+let touchStartX = 0;
+let touchEndX = 0;
+
+if (carouselTrack) {
+    carouselTrack.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+
+    carouselTrack.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+}
+
+function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+            // Swipe left - scroll right
+            scrollCarousel(1);
+        } else {
+            // Swipe right - scroll left
+            scrollCarousel(-1);
+        }
+    }
+}
 
 // Debug: Log image URLs
 console.log('Product image URL:', '<?php echo $product->image_url; ?>');

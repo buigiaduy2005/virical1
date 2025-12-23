@@ -13,75 +13,93 @@
         <div class="footer-main">
             <div class="ast-container">
                 <div class="footer-content">
-                    <!-- Company Info -->
+                    <!-- Section 1: Company Info -->
                     <div class="footer-widget footer-about">
                         <div class="footer-logo-wrapper" style="width: 200px !important; height: 60px !important; overflow: hidden !important; margin-bottom: 19px; position: relative; display: block;">
                             <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/virical-logo.svg' ); ?>" style="position: absolute !important; top: -589px !important; left: -282px !important; width: 497px !important; height: auto !important; max-width: none !important;"
                                  alt="<?php bloginfo( 'name' ); ?>">
                         </div>
-                        <p><?php echo esc_html(virical_get_company_info('description', 'Thương hiệu đèn chiếu sáng hàng đầu Việt Nam với các giải pháp chiếu sáng thông minh và hiện đại.')); ?></p>
+                        <p><?php echo esc_html(get_option('virical_footer_desc', 'Thương hiệu đèn chiếu sáng hàng đầu Việt Nam với các giải pháp chiếu sáng thông minh và hiện đại.')); ?></p>
                         <div class="social-links">
-                            <a href="<?php echo esc_url(virical_get_social_link('facebook')); ?>" target="_blank" rel="noopener">
+                            <?php if($url = get_option('virical_social_facebook')): ?>
+                            <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
-                            <a href="<?php echo esc_url(virical_get_social_link('youtube')); ?>" target="_blank" rel="noopener">
+                            <?php endif; ?>
+                            
+                            <?php if($url = get_option('virical_social_youtube')): ?>
+                            <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener">
                                 <i class="fab fa-youtube"></i>
                             </a>
-                            <a href="<?php echo esc_url(virical_get_social_link('zalo', 'https://zalo.me/virical')); ?>" target="_blank" rel="noopener">
-                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/zalo-icon.png" alt="Zalo" style="width: 16px; height: 16px;">
+                            <?php endif; ?>
+                            
+                            <?php if($url = get_option('virical_social_zalo')): ?>
+                            <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener" style="font-weight: bold; font-size: 18px;">
+                                Z
                             </a>
-                            <a href="<?php echo esc_url(virical_get_social_link('instagram')); ?>" target="_blank" rel="noopener">
+                            <?php endif; ?>
+                            
+                            <?php if($url = get_option('virical_social_instagram')): ?>
+                            <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener">
                                 <i class="fab fa-instagram"></i>
                             </a>
-                            <a href="<?php echo esc_url(virical_get_social_link('linkedin')); ?>" target="_blank" rel="noopener">
+                            <?php endif; ?>
+                            
+                            <?php if($url = get_option('virical_social_linkedin')): ?>
+                            <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
+                            <?php endif; ?>
                         </div>
                     </div>
 
-                    <!-- Products Menu -->
+                    <!-- Section 2: Products Menu -->
                     <div class="footer-widget">
-                        <h3>Sản Phẩm</h3>
+                        <h3><?php echo esc_html(get_option('virical_footer_menu1_title', 'Sản Phẩm')); ?></h3>
                         <ul>
-                            <li><a href="<?php echo home_url('/indoor/'); ?>">Đèn Indoor</a></li>
-                            <li><a href="<?php echo home_url('/outdoor/'); ?>">Đèn Outdoor</a></li>
-                            <li><a href="<?php echo home_url('/san-pham/downlight/'); ?>">Đèn Downlight</a></li>
-                            <li><a href="<?php echo home_url('/san-pham/spotlight/'); ?>">Đèn Spotlight</a></li>
-                            <li><a href="<?php echo home_url('/san-pham/ray-nam-cham/'); ?>">Đèn Ray Nam Châm</a></li>
+                            <?php for($i=1; $i<=6; $i++): 
+                                $text = get_option("virical_footer_menu1_text_$i");
+                                $url = get_option("virical_footer_menu1_url_$i");
+                                if($text && $url):
+                            ?>
+                            <li><a href="<?php echo esc_url($url); ?>"><?php echo esc_html($text); ?></a></li>
+                            <?php endif; endfor; ?>
                         </ul>
                     </div>
 
-                    <!-- Information Menu -->
+                    <!-- Section 3: Information Menu -->
                     <div class="footer-widget">
-                        <h3>Thông Tin</h3>
+                        <h3><?php echo esc_html(get_option('virical_footer_menu2_title', 'Thông Tin')); ?></h3>
                         <ul>
-                            <li><a href="<?php echo home_url('/gioi-thieu/'); ?>">Về Chúng Tôi</a></li>
-                            <li><a href="<?php echo home_url('/cong-trinh/'); ?>">Công Trình</a></li>
-                            <li><a href="<?php echo home_url('/catalogue/'); ?>">Catalogue</a></li>
-                            <li><a href="<?php echo home_url('/chinh-sach-bao-hanh/'); ?>">Chính Sách Bảo Hành</a></li>
-                            <li><a href="<?php echo home_url('/lien-he/'); ?>">Liên Hệ</a></li>
+                            <?php for($i=1; $i<=6; $i++): 
+                                $text = get_option("virical_footer_menu2_text_$i");
+                                $url = get_option("virical_footer_menu2_url_$i");
+                                if($text && $url):
+                            ?>
+                            <li><a href="<?php echo esc_url($url); ?>"><?php echo esc_html($text); ?></a></li>
+                            <?php endif; endfor; ?>
                         </ul>
                     </div>
 
-                    <!-- Contact Info -->
+                    <!-- Section 4: Contact Info -->
                     <div class="footer-widget footer-contact">
-                        <h3>Liên Hệ</h3>
+                        <h3><?php echo esc_html(get_option('virical_footer_contact_title', 'Liên Hệ')); ?></h3>
                         <ul class="contact-info">
                             <li>
                                 <i class="fas fa-map-marker-alt"></i>
-                                <span><?php echo nl2br(esc_html(virical_get_company_info('address', 'Số 30 Ngõ 100 Nguyễn Xiển, Thanh Xuân, Hà Nội, Việt Nam'))); ?></span>
+                                <span><?php echo nl2br(esc_html(get_option('virical_footer_address', 'Số 30 Ngõ 100 Nguyễn Xiển, Thanh Xuân, Hà Nội, Việt Nam'))); ?></span>
                             </li>
                             <li>
                                 <i class="fas fa-phone"></i>
-                                <span><?php echo esc_html(virical_get_company_info('phone', '0869995698')); ?><?php $mobile = virical_get_company_info('mobile'); if ($mobile && $mobile !== virical_get_company_info('phone')) echo ' | ' . esc_html($mobile); ?></span>
+                                <span><?php echo esc_html(get_option('virical_footer_phone', '0869995698')); ?></span>
                             </li>
                             <li>
                                 <i class="fas fa-envelope"></i>
-                                <span><?php echo esc_html(virical_get_company_info('email', 'info@virical.vn')); ?></span>
+                                <span><?php echo esc_html(get_option('virical_footer_email', 'info@virical.vn')); ?></span>
                             </li>
                         </ul>
                         <div class="newsletter">
-                            <h4>Đăng Ký Nhận Tin</h4>
+                            <h4><?php echo esc_html(get_option('virical_footer_newsletter_title', 'Đăng Ký Nhận Tin')); ?></h4>
                             <form class="newsletter-form" action="<?php echo admin_url('admin-ajax.php'); ?>" method="post">
                                 <input type="email" name="email" placeholder="Email của bạn" required>
                                 <button type="submit">Đăng Ký</button>
@@ -92,18 +110,22 @@
             </div>
         </div>
 
-        <!-- Footer Bottom -->
+        <!-- Section 5: Footer Bottom -->
         <div class="footer-bottom">
             <div class="ast-container">
                 <div class="footer-bottom-content">
                     <div class="copyright">
-                        <p>&copy; <?php echo date('Y'); ?> Virical. All Rights Reserved. | Designed by Virical Team</p>
+                        <p><?php echo esc_html(get_option('virical_footer_copyright', '© 2025 Virical. All Rights Reserved. | Designed by Virical Team')); ?></p>
                     </div>
                     <div class="footer-links">
                         <ul>
-                            <li><a href="<?php echo home_url('/chinh-sach-bao-mat/'); ?>">Chính sách bảo mật</a></li>
-                            <li><a href="<?php echo home_url('/dieu-khoan-su-dung/'); ?>">Điều khoản sử dụng</a></li>
-                            <li><a href="<?php echo home_url('/ho-tro/'); ?>">Hỗ trợ</a></li>
+                            <?php for($i=1; $i<=3; $i++): 
+                                $text = get_option("virical_footer_bottom_text_$i");
+                                $url = get_option("virical_footer_bottom_url_$i");
+                                if($text && $url):
+                            ?>
+                            <li><a href="<?php echo esc_url($url); ?>"><?php echo esc_html($text); ?></a></li>
+                            <?php endif; endfor; ?>
                         </ul>
                     </div>
                 </div>

@@ -220,8 +220,8 @@ class ViricalRoutingManager {
         // Process rules
         foreach ($rules as &$rule) {
             // Decode JSON fields
-            $rule->conditions = json_decode($rule->conditions, true);
-            $rule->meta_data = json_decode($rule->meta_data, true);
+            $rule->conditions = json_decode((string)$rule->conditions, true);
+            $rule->meta_data = json_decode((string)$rule->meta_data, true);
         }
         
         // Cache the result
