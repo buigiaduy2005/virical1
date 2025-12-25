@@ -104,7 +104,7 @@ for ($i = 4; $i <= 6; $i++) {
     width: 100%;
     /* Create scroll space */
     height: 300vh; 
-    background-color: #f8f9fa;
+    background-color: #FFFFFF;
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -298,145 +298,211 @@ for ($i = 4; $i <= 6; $i++) {
 /* Mobile Adjustments */
 @media (max-width: 991px) {
     .phone-reveal-section {
-        height: auto; /* Remove scroll effect on mobile if too complex */
-        padding: 80px 0;
+        height: 200vh;
+        padding: 0;
         background-attachment: scroll;
     }
     
     .phone-reveal-sticky-wrapper {
-        position: relative;
-        height: auto;
+        position: sticky;
+        height: 100vh;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    
+    .phone-reveal-container {
+        display: flex;
         flex-direction: column;
-        top: auto;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 350px;
+        height: auto;
+        gap: 15px;
+        padding: 20px;
+        perspective: none;
     }
     
     .phone-title {
-        position: relative;
-        top: auto;
-        margin-bottom: 30px;
-        opacity: 1 !important;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
         transform: none !important;
+        margin: 0 0 10px 0;
+        text-align: center;
+        width: 100%;
     }
     
     .phone-title h2 {
-        font-size: 2rem;
+        font-size: 1.4rem;
+    }
+    
+    .phone-center-logo {
+        display: none;
     }
     
     .phone-center {
-        margin-bottom: 60px;
-        width: 220px;
+        position: relative !important;
+        width: 120px !important;
+        max-width: 120px !important;
+        margin: 0 auto 15px !important;
+        filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
     }
     
     .features-group {
-        position: relative;
-        top: auto;
-        left: auto;
-        right: auto;
-        transform: none;
-        width: 100%;
-        max-width: 500px;
-        padding: 0 20px;
-        margin: 0 auto;
-        gap: 30px;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        gap: 8px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
     }
     
-    .features-left {
-        margin-bottom: 30px;
-    }
-    
-    .features-left, .features-right {
-        align-items: center;
-        text-align: center;
-        margin-left: 0;
-        margin-right: 0;
+    .features-left,
+    .features-right {
+        position: relative !important;
+        left: auto !important;
+        right: auto !important;
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        align-items: center !important;
+        margin: 0 !important;
     }
     
     .feature-item {
-        opacity: 1;
-        transform: none;
-        width: 100%;
-        justify-content: center;
-        flex-direction: column !important;
-        text-align: center;
-        gap: 15px;
+        opacity: 0;
+        transform: translateY(20px);
+        width: 100% !important;
+        max-width: 100% !important;
+        justify-content: flex-start !important;
+        flex-direction: row !important;
+        text-align: left !important;
+        gap: 10px !important;
+        padding: 12px !important;
+        border-radius: 10px !important;
+        margin: 0 !important;
+        background: rgba(255,255,255,0.95);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
     
-    .feature-link, .features-right .feature-link {
-        flex-direction: column !important;
-        gap: 15px;
+    .features-left .feature-item,
+    .features-right .feature-item {
+        flex-direction: row !important;
+    }
+    
+    .feature-link,
+    .features-right .feature-link {
+        flex-direction: row !important;
+        gap: 10px !important;
+        width: 100%;
+    }
+    
+    .feature-icon {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+        padding: 6px !important;
+    }
+    
+    .feature-content h3 {
+        font-size: 13px !important;
+        margin-bottom: 2px !important;
+    }
+    
+    .feature-content p {
+        font-size: 11px !important;
+        line-height: 1.3 !important;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .phone-reveal-section {
+        padding: 40px 10px;
+    }
+    
+    .phone-title h2 {
+        font-size: 1.2rem;
+    }
+    
+    .phone-center {
+        width: 150px !important;
+        max-width: 150px !important;
+    }
+    
+    .feature-item {
+        padding: 12px;
+        gap: 10px;
+    }
+    
+    .feature-icon {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+    
+    .feature-content h3 {
+        font-size: 13px;
+    }
+    
+    .feature-content p {
+        font-size: 11px;
     }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Only run on desktop/tablet > 991px
-    if (window.innerWidth <= 991) return;
-
     const section = document.querySelector('.phone-reveal-section');
-    const container = document.querySelector('.phone-reveal-container');
     const leftFeatures = document.querySelectorAll('.features-left .feature-item');
     const rightFeatures = document.querySelectorAll('.features-right .feature-item');
     const phone = document.querySelector('.phone-center');
+    const title = document.querySelector('.phone-title');
+    const centerLogo = document.querySelector('.phone-center-logo');
 
     if (!section) return;
 
-    // Use IntersectionObserver for smoother activation
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                window.addEventListener('scroll', handleScroll, { passive: true });
-            } else {
-                window.removeEventListener('scroll', handleScroll);
-            }
-        });
-    }, { threshold: 0 });
-
-    observer.observe(section);
+    const isMobile = window.innerWidth <= 991;
 
     function handleScroll() {
         const rect = section.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
         
-        // Ensure calculations are safe
         const start = 0; 
         const end = rect.height - viewportHeight; 
         
         if (end <= 0) return;
 
-        // Current scroll position relative to the section start
         const scrollY = -rect.top;
-        
-        // Calculate raw progress
         let rawProgress = scrollY / end;
-        
-        // Clamp progress between 0 and 1
         let progress = Math.min(Math.max(rawProgress, 0), 1);
-        
-        // Debugging
-        // console.log('Scroll:', scrollY, 'End:', end, 'Progress:', progress);
 
-        // Apply animations
-        
-        // 0. Title Animation (Fade out and shrink as features appear)
-        const title = document.querySelector('.phone-title');
+        // Title Animation
         if (title) {
-            // Title disappears in first 30% of scroll
             const titleProgress = Math.min(progress / 0.3, 1);
             const titleOpacity = 1 - titleProgress;
-            const titleScale = 1 - (titleProgress * 0.5); // Shrink to 50%
-            const titleY = titleProgress * -50; // Move up 50px
+            const titleScale = 1 - (titleProgress * 0.5);
+            const titleY = titleProgress * -50;
             
             title.style.opacity = titleOpacity;
-            // Keep translate(-50%, -50%) for centering, add scale and translateY
             title.style.transform = `translate(-50%, calc(-50% + ${titleY}px)) scale(${titleScale})`;
-            title.style.zIndex = titleProgress > 0.5 ? 15 : 25; // Move behind phone halfway
+            title.style.zIndex = titleProgress > 0.5 ? 15 : 25;
         }
         
-        // 0.5. Center Logo Animation (Fade in as features spread)
-        const centerLogo = document.querySelector('.phone-center-logo');
+        // Center Logo Animation
         if (centerLogo) {
-            // Logo appears between 10% and 40% of scroll (earlier than before)
             const logoStart = 0.1;
             const logoEnd = 0.4;
             let logoProgress = 0;
@@ -449,58 +515,83 @@ document.addEventListener('DOMContentLoaded', function() {
                 logoProgress = (progress - logoStart) / (logoEnd - logoStart);
             }
             
-            // Fade from 0.3 to 1.0
             centerLogo.style.opacity = 0.3 + (logoProgress * 0.7);
         }
         
-        // 1. Phone Animation (Subtle Scale & Rotate)
+        // Phone Animation
         if (phone) {
-            phone.style.transform = `scale(${1 + progress * 0.05}) rotateY(${progress * 5}deg)`;
+            if (isMobile) {
+                // Mobile: just subtle scale
+                phone.style.transform = `scale(${1 + progress * 0.02})`;
+            } else {
+                phone.style.transform = `scale(${1 + progress * 0.05}) rotateY(${progress * 5}deg)`;
+            }
         }
         
-        // 2. Features Reveal Animation
-        // Spread distance in pixels (reduced to bring cards closer)
-        const spreadDistanceX = 350; // Reduced from 450px
-        const spreadDistanceY = 40; // Reduced from 50px
-        
-        leftFeatures.forEach((item, index) => {
-            // Stagger delay based on index (0, 1, 2)
-            // Normalized range for this item's animation
-            const startP = index * 0.15;
-            const endP = 0.6 + (index * 0.1); 
+        // Features Animation
+        if (isMobile) {
+            // Mobile: Simple fade in with translateY
+            const featuresStart = 0.15;
+            const featuresEnd = 0.6;
+            let featProgress = (progress - featuresStart) / (featuresEnd - featuresStart);
+            featProgress = Math.min(Math.max(featProgress, 0), 1);
             
-            let itemProgress = (progress - startP) / (endP - startP);
-            itemProgress = Math.min(Math.max(itemProgress, 0), 1);
+            const eased = featProgress < 0.5 ? 2 * featProgress * featProgress : 1 - Math.pow(-2 * featProgress + 2, 2) / 2;
+            const opacity = eased;
+            const translateY = 20 * (1 - eased); // 20px -> 0px
             
-            // Easing
-            const eased = itemProgress < 0.5 ? 2 * itemProgress * itemProgress : 1 - Math.pow(-2 * itemProgress + 2, 2) / 2;
+            leftFeatures.forEach(item => {
+                item.style.opacity = opacity;
+                item.style.transform = `translateY(${translateY}px)`;
+            });
             
-            const x = -spreadDistanceX * eased;
-            const y = (index - 1) * spreadDistanceY * eased; // -Y, 0, +Y
+            rightFeatures.forEach(item => {
+                item.style.opacity = opacity;
+                item.style.transform = `translateY(${translateY}px)`;
+            });
+        } else {
+            // Desktop: horizontal spread with stagger
+            const spreadDistanceX = 350;
+            const spreadDistanceY = 40;
             
-            item.style.opacity = eased;
-            item.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${0.8 + 0.2 * eased})`;
-        });
-        
-        rightFeatures.forEach((item, index) => {
-            const startP = index * 0.15;
-            const endP = 0.6 + (index * 0.1);
+            leftFeatures.forEach((item, index) => {
+                const startP = index * 0.15;
+                const endP = 0.6 + (index * 0.1); 
+                
+                let itemProgress = (progress - startP) / (endP - startP);
+                itemProgress = Math.min(Math.max(itemProgress, 0), 1);
+                
+                const eased = itemProgress < 0.5 ? 2 * itemProgress * itemProgress : 1 - Math.pow(-2 * itemProgress + 2, 2) / 2;
+                
+                const x = -spreadDistanceX * eased;
+                const y = (index - 1) * spreadDistanceY * eased;
+                
+                item.style.opacity = eased;
+                item.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${0.8 + 0.2 * eased})`;
+            });
             
-            let itemProgress = (progress - startP) / (endP - startP);
-            itemProgress = Math.min(Math.max(itemProgress, 0), 1);
-            
-            // Easing
-            const eased = itemProgress < 0.5 ? 2 * itemProgress * itemProgress : 1 - Math.pow(-2 * itemProgress + 2, 2) / 2;
-            
-            const x = spreadDistanceX * eased;
-            const y = (index - 1) * spreadDistanceY * eased;
-            
-            item.style.opacity = eased;
-            item.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${0.8 + 0.2 * eased})`;
-        });
+            rightFeatures.forEach((item, index) => {
+                const startP = index * 0.15;
+                const endP = 0.6 + (index * 0.1);
+                
+                let itemProgress = (progress - startP) / (endP - startP);
+                itemProgress = Math.min(Math.max(itemProgress, 0), 1);
+                
+                const eased = itemProgress < 0.5 ? 2 * itemProgress * itemProgress : 1 - Math.pow(-2 * itemProgress + 2, 2) / 2;
+                
+                const x = spreadDistanceX * eased;
+                const y = (index - 1) * spreadDistanceY * eased;
+                
+                item.style.opacity = eased;
+                item.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${0.8 + 0.2 * eased})`;
+            });
+        }
     }
+
+    // Add scroll listener
+    window.addEventListener('scroll', handleScroll, { passive: true });
     
-    // Initial trigger to set positions if loaded mid-page
+    // Initial trigger
     handleScroll();
 });
 </script>

@@ -1445,42 +1445,54 @@ body {
     }
     
     .carousel-3d-wrapper {
-        perspective: 1200px;
+        perspective: none;
         margin-top: 50px;
     }
     
     .carousel-3d-container {
-        height: 550px;
+        height: 500px;
+        transform-style: flat;
     }
     
     .carousel-3d-item {
-        width: 280px;
+        width: 90%;
+        max-width: 320px;
+        left: 50%;
+        transform: translateX(-50%) !important;
     }
     
-    /* Mobile: Vertical Stack Layout */
-    .carousel-3d-item[data-position="center"] {
-        transform: translateY(0) translateZ(0) scale(1);
-        opacity: 1;
+    /* Mobile: Show only active item, hide all others */
+    .carousel-3d-item[data-index="0"],
+    .carousel-3d-item[data-index="1"],
+    .carousel-3d-item[data-index="2"],
+    .carousel-3d-item[data-index="4"],
+    .carousel-3d-item[data-index="5"],
+    .carousel-3d-item[data-index="6"],
+    .carousel-3d-item[data-index="7"],
+    .carousel-3d-item[data-index="8"],
+    .carousel-3d-item[data-index="9"],
+    .carousel-3d-item[data-index="10"] {
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transform: translateX(-50%) scale(0.8) !important;
+        z-index: 0 !important;
     }
     
-    .carousel-3d-item[data-position="left-1"],
-    .carousel-3d-item[data-position="right-1"] {
-        transform: translateY(-200px) translateZ(-100px) scale(0.75);
-        opacity: 0.4;
-    }
-    
-    .carousel-3d-item[data-position="left-2"],
-    .carousel-3d-item[data-position="right-2"] {
-        transform: translateY(200px) translateZ(-100px) scale(0.75);
-        opacity: 0.4;
+    /* Show only the center item */
+    .carousel-3d-item[data-index="3"] {
+        opacity: 1 !important;
+        pointer-events: all !important;
+        transform: translateX(-50%) scale(1) !important;
+        z-index: 5 !important;
     }
     
     .product-3d-card {
         padding: 30px 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     }
     
     .product-3d-image {
-        height: 220px;
+        height: 200px;
         margin-bottom: 20px;
     }
     
@@ -1488,12 +1500,20 @@ body {
         font-size: 18px;
     }
     
+    .product-3d-code {
+        font-size: 13px;
+    }
+    
     .product-3d-select {
-        padding: 10px 30px;
+        padding: 12px 30px;
         font-size: 13px;
         /* Large touch targets for mobile */
         min-height: 44px;
         min-width: 120px;
+    }
+    
+    .carousel-3d-nav {
+        padding: 0 10px;
     }
     
     .carousel-3d-nav button {
@@ -1504,16 +1524,16 @@ body {
     
     .carousel-3d-indicators {
         margin-top: 40px;
-        gap: 10px;
+        gap: 8px;
     }
     
     .carousel-3d-indicators .indicator {
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
     }
     
     .carousel-3d-indicators .indicator.active {
-        width: 30px;
+        width: 24px;
     }
 }
 
