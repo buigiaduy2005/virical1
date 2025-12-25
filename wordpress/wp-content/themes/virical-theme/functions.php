@@ -73,7 +73,8 @@ function virical_init_configuration_system() {
         'class-virical-navigation-manager.php',
         'class-virical-routing-manager.php',
         'contact-admin.php',
-        'footer-admin-manager.php'
+        'footer-admin-manager.php',
+        'about-page-admin.php'
     ];
     
     foreach ($managers as $file) {

@@ -63,6 +63,27 @@ function virical_products_page() {
             "SELECT * FROM {$wpdb->prefix}virical_products WHERE id = %d",
             $_GET['id']
         ));
+        
+        if ($edit_product && !empty($edit_product->gallery)) {
+            $gallery_data = json_decode($edit_product->gallery, true);
+            if (is_array($gallery_data)) {
+                $edit_product->image_url_2 = $gallery_data[0] ?? '';
+                $edit_product->image_url_3 = $gallery_data[1] ?? '';
+                $edit_product->image_url_4 = $gallery_data[2] ?? '';
+            }
+        }
+        
+        if ($edit_product && !empty($edit_product->applications)) {
+            $apps_data = json_decode($edit_product->applications, true);
+            if (is_array($apps_data)) {
+                for ($i = 1; $i <= 3; $i++) {
+                    $idx = $i - 1;
+                    $edit_product->{"app_img_$i"} = $apps_data[$idx]['image'] ?? '';
+                    $edit_product->{"app_title_$i"} = $apps_data[$idx]['title'] ?? '';
+                    $edit_product->{"app_desc_$i"} = $apps_data[$idx]['desc'] ?? '';
+                }
+            }
+        }
     }
     ?>
     
@@ -137,8 +158,56 @@ function virical_products_page() {
                         <td><textarea id="description" name="description" rows="3" class="large-text"><?php echo $edit_product ? esc_textarea($edit_product->description) : ''; ?></textarea></td>
                     </tr>
                     <tr>
+                        <th><label for="detailed_title">Tiêu đề phần chi tiết (SEO)</label></th>
+                        <td><input type="text" id="detailed_title" name="detailed_title" class="regular-text" value="<?php echo $edit_product ? esc_attr($edit_product->detailed_title) : ''; ?>" placeholder="Ví dụ: Giải pháp chiếu sáng hiện đại"></td>
+                    </tr>
+                    <tr>
+                        <th><label for="product_content">Nội dung chi tiết (Body SEO)</label></th>
+                        <td>
+                            <?php 
+                            $content_value = ($edit_product && !is_null($edit_product->content)) ? $edit_product->content : '';
+                            wp_editor($content_value, 'product_content', array(
+                                'textarea_name' => 'content',
+                                'textarea_rows' => 15,
+                                'media_buttons' => true
+                            ));
+                            ?>
+                            <p class="description">Nội dung hiển thị ở phần cuối trang chi tiết sản phẩm.</p>
+                        </td>
+                    </tr>
+                    <tr>
                         <th><label for="price">Giá (VNĐ)</label></th>
                         <td><input type="number" id="price" name="price" value="<?php echo $edit_product ? esc_attr($edit_product->price) : ''; ?>"></td>
+                    </tr>
+                    <tr>
+                        <th><label for="specifications">Thông số kỹ thuật</label></th>
+                        <td>
+                            <textarea id="specifications" name="specifications" rows="8" class="large-text" placeholder="Công suất: 15W - 50W&#10;Điện áp: 220V - 240V AC&#10;Nhiệt độ màu: 3000K / 4000K / 6500K"><?php 
+                                if ($edit_product && !empty($edit_product->specifications)) {
+                                    $specs = json_decode($edit_product->specifications, true);
+                                    if (is_array($specs)) {
+                                        foreach ($specs as $key => $value) {
+                                            echo esc_html($key . ': ' . $value . "\n");
+                                        }
+                                    }
+                                }
+                            ?></textarea>
+                            <p class="description">Nhập theo định dạng <strong>Tên: Giá trị</strong> (mỗi dòng một thông số).</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="features">Tính năng nổi bật</label></th>
+                        <td>
+                            <textarea id="features" name="features" rows="5" class="large-text" placeholder="Tiết kiệm năng lượng&#10;Tuổi thọ cao&#10;Ánh sáng chất lượng"><?php 
+                                if ($edit_product && !empty($edit_product->features)) {
+                                    $feats = json_decode($edit_product->features, true);
+                                    if (is_array($feats)) {
+                                        echo esc_html(implode("\n", $feats));
+                                    }
+                                }
+                            ?></textarea>
+                            <p class="description">Mỗi tính năng một dòng (hiển thị dạng dấu tích).</p>
+                        </td>
                     </tr>
                     <tr>
                         <th><label for="image_url">Hình ảnh chính</label></th>
@@ -152,6 +221,68 @@ function virical_products_page() {
                             </div>
                         </td>
                     </tr>
+                    <tr>
+                        <th><label for="image_url_2">Hình ảnh 2</label></th>
+                        <td>
+                            <input type="text" id="image_url_2" name="image_url_2" class="regular-text" value="<?php echo $edit_product ? esc_attr($edit_product->image_url_2) : ''; ?>">
+                            <button type="button" class="button virical-media-upload" data-target="image_url_2">Chọn ảnh</button>
+                            <div id="image_url_2_preview" class="virical-product-image-preview">
+                                <?php if ($edit_product && $edit_product->image_url_2): ?>
+                                    <img src="<?php echo esc_url($edit_product->image_url_2); ?>">
+                                <?php endif; ?>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="image_url_3">Hình ảnh 3</label></th>
+                        <td>
+                            <input type="text" id="image_url_3" name="image_url_3" class="regular-text" value="<?php echo $edit_product ? esc_attr($edit_product->image_url_3) : ''; ?>">
+                            <button type="button" class="button virical-media-upload" data-target="image_url_3">Chọn ảnh</button>
+                            <div id="image_url_3_preview" class="virical-product-image-preview">
+                                <?php if ($edit_product && $edit_product->image_url_3): ?>
+                                    <img src="<?php echo esc_url($edit_product->image_url_3); ?>">
+                                <?php endif; ?>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="image_url_4">Hình ảnh 4</label></th>
+                        <td>
+                            <input type="text" id="image_url_4" name="image_url_4" class="regular-text" value="<?php echo $edit_product ? esc_attr($edit_product->image_url_4) : ''; ?>">
+                            <button type="button" class="button virical-media-upload" data-target="image_url_4">Chọn ảnh</button>
+                            <div id="image_url_4_preview" class="virical-product-image-preview">
+                                <?php if ($edit_product && $edit_product->image_url_4): ?>
+                                    <img src="<?php echo esc_url($edit_product->image_url_4); ?>">
+                                <?php endif; ?>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <th colspan="2" style="background: #f0f0f0; text-align: center;">ỨNG DỤNG - CÔNG TRÌNH (3 MỤC)</th>
+                    </tr>
+                    
+                    <?php for ($i = 1; $i <= 3; $i++): ?>
+                    <tr>
+                        <th>Mục ứng dụng <?php echo $i; ?></th>
+                        <td>
+                            <div style="margin-bottom: 10px;">
+                                <label>Hình ảnh:</label><br>
+                                <input type="text" id="app_img_<?php echo $i; ?>" name="app_img_<?php echo $i; ?>" class="regular-text" value="<?php echo $edit_product ? esc_attr($edit_product->{"app_img_$i"} ?? '') : ''; ?>">
+                                <button type="button" class="button virical-media-upload" data-target="app_img_<?php echo $i; ?>">Chọn ảnh</button>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <label>Tiêu đề:</label><br>
+                                <input type="text" name="app_title_<?php echo $i; ?>" class="regular-text" value="<?php echo $edit_product ? esc_attr($edit_product->{"app_title_$i"} ?? '') : ''; ?>">
+                            </div>
+                            <div>
+                                <label>Mô tả:</label><br>
+                                <textarea name="app_desc_<?php echo $i; ?>" rows="2" class="large-text"><?php echo $edit_product ? esc_textarea($edit_product->{"app_desc_$i"} ?? '') : ''; ?></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endfor; ?>
+                    
                     <tr>
                         <th><label for="is_featured">Nổi bật</label></th>
                         <td><input type="checkbox" name="is_featured" value="1" <?php checked($edit_product && $edit_product->is_featured, 1); ?>></td>
@@ -360,31 +491,115 @@ function virical_categories_page() {
 // Data Handling Functions
 function virical_add_product($data) {
     global $wpdb;
-    $wpdb->insert($wpdb->prefix . 'virical_products', [
+    
+    $gallery = [];
+    if (!empty($data['image_url_2'])) $gallery[] = esc_url_raw($data['image_url_2']);
+    if (!empty($data['image_url_3'])) $gallery[] = esc_url_raw($data['image_url_3']);
+    if (!empty($data['image_url_4'])) $gallery[] = esc_url_raw($data['image_url_4']);
+    
+    $specs_raw = isset($data['specifications']) ? explode("\n", $data['specifications']) : [];
+    $specs = [];
+    foreach ($specs_raw as $line) {
+        $parts = explode(':', $line, 2);
+        if (count($parts) === 2) {
+            $specs[trim($parts[0])] = trim($parts[1]);
+        }
+    }
+    
+    $features_raw = isset($data['features']) ? explode("\n", $data['features']) : [];
+    $features = array_filter(array_map('trim', $features_raw));
+    
+    $applications = [];
+    for ($i = 1; $i <= 3; $i++) {
+        $applications[] = [
+            'image' => esc_url_raw($data["app_img_$i"] ?? ''),
+            'title' => sanitize_text_field($data["app_title_$i"] ?? ''),
+            'desc'  => sanitize_text_field($data["app_desc_$i"] ?? '')
+        ];
+    }
+    
+    $result = $wpdb->insert($wpdb->prefix . 'virical_products', [
         'name' => sanitize_text_field($data['name']),
         'slug' => sanitize_title($data['slug'] ?: $data['name']),
         'description' => wp_kses_post($data['description']),
+        'detailed_title' => sanitize_text_field($data['detailed_title']),
+        'content' => wp_kses_post($data['content']),
         'category' => sanitize_text_field($data['category']),
         'price' => floatval($data['price']),
+        'specifications' => json_encode($specs),
+        'features' => json_encode($features),
+        'applications' => json_encode($applications),
         'image_url' => esc_url_raw($data['image_url']),
+        'image_url_2' => esc_url_raw($data['image_url_2'] ?? ''),
+        'image_url_3' => esc_url_raw($data['image_url_3'] ?? ''),
+        'image_url_4' => esc_url_raw($data['image_url_4'] ?? ''),
+        'gallery' => json_encode($gallery),
         'is_featured' => isset($data['is_featured']) ? 1 : 0,
         'sort_order' => intval($data['sort_order']),
         'is_active' => 1
     ]);
+    
+    if ($result) {
+        echo '<div class="notice notice-success is-dismissible"><p>Sản phẩm đã được thêm!</p></div>';
+    } else {
+        echo '<div class="notice notice-error is-dismissible"><p>Lỗi khi thêm sản phẩm: ' . $wpdb->last_error . '</p></div>';
+    }
 }
 
 function virical_update_product($data) {
     global $wpdb;
-    $wpdb->update($wpdb->prefix . 'virical_products', [
+    
+    $gallery = [];
+    if (!empty($data['image_url_2'])) $gallery[] = esc_url_raw($data['image_url_2']);
+    if (!empty($data['image_url_3'])) $gallery[] = esc_url_raw($data['image_url_3']);
+    if (!empty($data['image_url_4'])) $gallery[] = esc_url_raw($data['image_url_4']);
+    
+    $specs_raw = isset($data['specifications']) ? explode("\n", $data['specifications']) : [];
+    $specs = [];
+    foreach ($specs_raw as $line) {
+        $parts = explode(':', $line, 2);
+        if (count($parts) === 2) {
+            $specs[trim($parts[0])] = trim($parts[1]);
+        }
+    }
+    
+    $features_raw = isset($data['features']) ? explode("\n", $data['features']) : [];
+    $features = array_filter(array_map('trim', $features_raw));
+    
+    $applications = [];
+    for ($i = 1; $i <= 3; $i++) {
+        $applications[] = [
+            'image' => esc_url_raw($data["app_img_$i"] ?? ''),
+            'title' => sanitize_text_field($data["app_title_$i"] ?? ''),
+            'desc'  => sanitize_text_field($data["app_desc_$i"] ?? '')
+        ];
+    }
+    
+    $result = $wpdb->update($wpdb->prefix . 'virical_products', [
         'name' => sanitize_text_field($data['name']),
         'slug' => sanitize_title($data['slug'] ?: $data['name']),
         'description' => wp_kses_post($data['description']),
+        'detailed_title' => sanitize_text_field($data['detailed_title']),
+        'content' => wp_kses_post($data['content']),
         'category' => sanitize_text_field($data['category']),
         'price' => floatval($data['price']),
+        'specifications' => json_encode($specs),
+        'features' => json_encode($features),
+        'applications' => json_encode($applications),
         'image_url' => esc_url_raw($data['image_url']),
+        'image_url_2' => esc_url_raw($data['image_url_2'] ?? ''),
+        'image_url_3' => esc_url_raw($data['image_url_3'] ?? ''),
+        'image_url_4' => esc_url_raw($data['image_url_4'] ?? ''),
+        'gallery' => json_encode($gallery),
         'is_featured' => isset($data['is_featured']) ? 1 : 0,
         'sort_order' => intval($data['sort_order'])
     ], ['id' => intval($data['id'])]);
+    
+    if ($result !== false) {
+        echo '<div class="notice notice-success is-dismissible"><p>Sản phẩm đã được cập nhật!</p></div>';
+    } else {
+        echo '<div class="notice notice-error is-dismissible"><p>Lỗi khi cập nhật sản phẩm: ' . $wpdb->last_error . '</p></div>';
+    }
 }
 
 function virical_delete_product($id) {

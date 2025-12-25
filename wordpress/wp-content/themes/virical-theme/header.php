@@ -90,9 +90,9 @@
             display: flex; 
             align-items: center; 
             gap: 5px; 
-            background: transparent; 
-            border-radius: 0; 
-            padding: 0; 
+            background: #f0f0f0; 
+            border-radius: 30px; 
+            padding: 8px 12px; 
         }
         
         /* WordPress Menu Support */
@@ -127,6 +127,7 @@
         .nav .current_page_item > a { 
             color: #fff !important; 
             background: #333 !important; 
+            border-radius: 25px !important;
         }
 
         /* Dropdown Submenu Styles */
@@ -270,6 +271,10 @@
             align-items: center; 
             justify-content: center; 
             cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
         }
         
         @media (max-width: 820px) {
@@ -317,8 +322,11 @@
 <header class="site-header" id="site-header">
     <div class="nav-container">
         <a href="<?php echo home_url('/'); ?>" class="brand" aria-label="Virical Home">
-            <div class="logo-text">Z</div>
-            <div class="logo-tagline">Feeling Light</div>
+            <div style="width: 200px !important; height: 60px !important; overflow: hidden !important; position: relative; display: block;">
+                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/virical-logo.svg' ); ?>" 
+                     style="position: absolute !important; top: -589px !important; left: -282px !important; width: 497px !important; height: auto !important; max-width: none !important;"
+                     alt="Virical Logo">
+            </div>
         </a>
         
         <nav class="nav" id="siteNav" aria-label="Main Navigation">

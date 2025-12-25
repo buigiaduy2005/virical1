@@ -49,6 +49,13 @@ if (!is_array($specifications)) $specifications = [];
 $gallery = !empty($product->gallery) ? json_decode($product->gallery, true) : [];
 if (!is_array($gallery)) $gallery = [];
 
+// Fallback to individual columns if gallery JSON is empty
+if (empty($gallery)) {
+    if (!empty($product->image_url_2)) $gallery[] = $product->image_url_2;
+    if (!empty($product->image_url_3)) $gallery[] = $product->image_url_3;
+    if (!empty($product->image_url_4)) $gallery[] = $product->image_url_4;
+}
+
 // Default image if not set
 $default_image = get_template_directory_uri() . '/assets/images/default-product.jpg';
 $product_image = !empty($product->image_url) ? $product->image_url : $default_image;
@@ -125,7 +132,7 @@ if (empty($gallery)) {
 
 /* Product Hero Section */
 .product-hero {
-    background: #1a1a1a;
+    background: #f4f4f4;
     padding: 60px 0;
     position: relative;
 }
@@ -148,7 +155,7 @@ if (empty($gallery)) {
 
 .gallery-main {
     position: relative;
-    background: #000;
+    background: #fff;
     border-radius: 0;
     overflow: hidden;
 }
@@ -156,7 +163,7 @@ if (empty($gallery)) {
 .gallery-slider {
     position: relative;
     height: 550px;
-    background: #000;
+    background: #fff;
 }
 
 .gallery-slide {
@@ -170,7 +177,7 @@ if (empty($gallery)) {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #000;
+    background: #fff;
 }
 
 .gallery-slide.active {
@@ -313,14 +320,14 @@ if (empty($gallery)) {
     font-weight: 300;
     line-height: 1.2;
     margin-bottom: 20px;
-    color: #d4af37;
+    color: #333;
     letter-spacing: 2px;
     text-transform: uppercase;
 }
 
 .product-subtitle {
     font-size: 16px;
-    color: #ccc;
+    color: #666;
     margin-bottom: 30px;
     line-height: 1.8;
 }
@@ -339,7 +346,7 @@ if (empty($gallery)) {
 .product-features h3 {
     font-size: 20px;
     margin-bottom: 20px;
-    color: #d4af37;
+    color: #333;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -354,7 +361,7 @@ if (empty($gallery)) {
     padding: 10px 0;
     padding-left: 30px;
     position: relative;
-    color: #ccc;
+    color: #555;
     font-size: 15px;
 }
 
@@ -388,9 +395,8 @@ if (empty($gallery)) {
 
 .btn-primary {
     background: var(--virical-gold);
-    color: #000;
+    color: #fff;
     border-color: var(--virical-gold);
-    font-weight: 700;
 }
 
 .btn-primary:hover {
@@ -401,14 +407,14 @@ if (empty($gallery)) {
 
 .btn-secondary {
     background: transparent;
-    color: #fff;
-    border-color: #fff;
+    color: #333;
+    border: 2px solid #333;
 }
 
 .btn-secondary:hover {
-    background: #fff;
-    color: #000;
-    border-color: #fff;
+    background: #333;
+    color: #fff;
+    border-color: #333;
 }
 
 /* Specifications Section */
@@ -847,12 +853,12 @@ if (empty($gallery)) {
     display: flex;
     gap: 0;
     margin-bottom: 30px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #ddd;
 }
 
 .product-tabs .tab-link {
     padding: 15px 20px;
-    color: #999;
+    color: #666;
     text-decoration: none;
     font-size: 13px;
     letter-spacing: 1px;
@@ -870,7 +876,7 @@ if (empty($gallery)) {
 
 .product-tabs .tab-content {
     display: none;
-    background: rgba(255, 255, 255, 0.05);
+    background: #fff;
     padding: 30px;
     border-radius: 0;
 }
@@ -883,14 +889,14 @@ if (empty($gallery)) {
 .product-tabs .tab-pane h3 {
     font-size: 18px;
     margin-bottom: 20px;
-    color: var(--virical-gold);
+    color: #333;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .product-tabs .tab-pane p {
     line-height: 1.8;
-    color: #ccc;
+    color: #555;
     margin-bottom: 15px;
 }
 
@@ -901,7 +907,7 @@ if (empty($gallery)) {
 }
 
 .specs-table tr {
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #eee;
 }
 
 .specs-table td {
@@ -910,12 +916,12 @@ if (empty($gallery)) {
 }
 
 .specs-table td:first-child {
-    color: #999;
+    color: #666;
     width: 40%;
 }
 
 .specs-table td:last-child {
-    color: #fff;
+    color: #333;
 }
 
 /* Product Content Section */
@@ -1191,32 +1197,18 @@ if (empty($gallery)) {
                         <div id="specs" class="tab-content active">
                             <div class="tab-pane">
                                 <h3>Thông số kỹ thuật</h3>
-                                <table class="specs-table">
-                                    <tr>
-                                        <td>Công suất</td>
-                                        <td>15W - 50W</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Điện áp</td>
-                                        <td>220V - 240V AC</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nhiệt độ màu</td>
-                                        <td>3000K / 4000K / 6500K</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Chỉ số hoàn màu (CRI)</td>
-                                        <td>> 90</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Góc chiếu sáng</td>
-                                        <td>24° / 36° / 60°</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tuổi thọ</td>
-                                        <td>50,000 giờ</td>
-                                    </tr>
-                                </table>
+                                <?php if (!empty($specifications)): ?>
+                                    <table class="specs-table">
+                                        <?php foreach ($specifications as $label => $value): ?>
+                                            <tr>
+                                                <td><?php echo esc_html($label); ?></td>
+                                                <td><?php echo esc_html($value); ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </table>
+                                <?php else: ?>
+                                    <p>Thông tin đang được cập nhật.</p>
+                                <?php endif; ?>
                             </div>
                         </div>
                         
@@ -1253,17 +1245,19 @@ if (empty($gallery)) {
     <section class="product-content-section">
         <div class="content-container">
             <div class="content-wrapper">
-                <?php if (!empty($product->content)): ?>
-                    <!-- Display content from database -->
-                    <div class="product-custom-content">
-                        <?php echo wp_kses_post($product->content); ?>
-                    </div>
-                <?php else: ?>
-                    <!-- Default content if no custom content -->
-                    <h2 class="content-title"><?php echo esc_html($product->name); ?> - Giải pháp chiếu sáng hiện đại</h2>
+                <?php 
+                $seo_title = !empty($product->detailed_title) ? $product->detailed_title : $product->name . ' - Giải pháp chiếu sáng hiện đại';
+                ?>
+                <h2 class="content-title"><?php echo esc_html($seo_title); ?></h2>
                 
                 <div class="content-body">
-                    <p><strong><?php echo esc_html($product->name); ?></strong> là một trong những sản phẩm đèn LED cao cấp được thiết kế với công nghệ hiện đại, mang đến giải pháp chiếu sáng hoàn hảo cho không gian của bạn. Với thiết kế sang trọng và hiệu suất vượt trội, sản phẩm này không chỉ đáp ứng nhu cầu chiếu sáng mà còn tạo điểm nhấn thẩm mỹ cho mọi công trình.</p>
+                    <?php if (!empty($product->content)): ?>
+                        <div class="product-custom-content">
+                            <?php echo wp_kses_post($product->content); ?>
+                        </div>
+                    <?php else: ?>
+                        <!-- Default content if no custom content -->
+                        <p><strong><?php echo esc_html($product->name); ?></strong> là một trong những sản phẩm đèn LED cao cấp được thiết kế với công nghệ hiện đại, mang đến giải pháp chiếu sáng hoàn hảo cho không gian của bạn. Với thiết kế sang trọng và hiệu suất vượt trội, sản phẩm này không chỉ đáp ứng nhu cầu chiếu sáng mà còn tạo điểm nhấn thẩm mỹ cho mọi công trình.</p>
                     
                     <h3>Ưu điểm nổi bật của <?php echo esc_html($product->name); ?></h3>
                     <ul>
@@ -1343,35 +1337,60 @@ if (empty($gallery)) {
             <h2 class="section-title">Ứng dụng - Công trình</h2>
             
             <div class="applications-grid">
-                <div class="application-item">
-                    <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=Kh%C3%B4ng+gian+s%E1%BB%91ng" 
-                         alt="Không gian sống" 
-                         class="application-image">
-                    <div class="application-content">
-                        <h3 class="application-title">Không gian sống</h3>
-                        <p class="application-description">Tạo điểm nhấn cho phòng khách, phòng ngủ với ánh sáng ấm áp, tạo không gian thư giãn và thoải mái.</p>
+                <?php 
+                $apps = !empty($product->applications) ? json_decode($product->applications, true) : [];
+                if (!empty($apps)):
+                    foreach ($apps as $app):
+                        if (empty($app['title']) && empty($app['image'])) continue;
+                ?>
+                    <div class="application-item">
+                        <?php if (!empty($app['image'])): ?>
+                            <img src="<?php echo esc_url($app['image']); ?>" 
+                                 alt="<?php echo esc_attr($app['title']); ?>" 
+                                 class="application-image">
+                        <?php else: ?>
+                            <div style="width:100%; height:250px; background:#f0f0f0; display:flex; align-items:center; justify-content:center; color:#999;">No Image</div>
+                        <?php endif; ?>
+                        <div class="application-content">
+                            <h3 class="application-title"><?php echo esc_html($app['title']); ?></h3>
+                            <p class="application-description"><?php echo esc_html($app['desc']); ?></p>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="application-item">
-                    <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=V%C4%83n+ph%C3%B2ng" 
-                         alt="Văn phòng hiện đại" 
-                         class="application-image">
-                    <div class="application-content">
-                        <h3 class="application-title">Văn phòng hiện đại</h3>
-                        <p class="application-description">Chiếu sáng chuyên nghiệp cho không gian làm việc, tăng hiệu suất và tạo môi trường làm việc lý tưởng.</p>
+                <?php 
+                    endforeach;
+                else: 
+                ?>
+                    <!-- Fallback placeholders if no dynamic apps -->
+                    <div class="application-item">
+                        <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=Kh%C3%B4ng+gian+s%E1%BB%91ng" 
+                             alt="Không gian sống" 
+                             class="application-image">
+                        <div class="application-content">
+                            <h3 class="application-title">Không gian sống</h3>
+                            <p class="application-description">Tạo điểm nhấn cho phòng khách, phòng ngủ với ánh sáng ấm áp, tạo không gian thư giãn và thoải mái.</p>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="application-item">
-                    <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=Showroom" 
-                         alt="Showroom & Cửa hàng" 
-                         class="application-image">
-                    <div class="application-content">
-                        <h3 class="application-title">Showroom & Cửa hàng</h3>
-                        <p class="application-description">Làm nổi bật sản phẩm với ánh sáng chất lượng cao, thu hút khách hàng và tăng doanh số bán hàng.</p>
+                    
+                    <div class="application-item">
+                        <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=V%C4%83n+ph%C3%B2ng" 
+                             alt="Văn phòng hiện đại" 
+                             class="application-image">
+                        <div class="application-content">
+                            <h3 class="application-title">Văn phòng hiện đại</h3>
+                            <p class="application-description">Chiếu sáng chuyên nghiệp cho không gian làm việc, tăng hiệu suất và tạo môi trường làm việc lý tưởng.</p>
+                        </div>
                     </div>
-                </div>
+                    
+                    <div class="application-item">
+                        <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=Showroom" 
+                             alt="Showroom & Cửa hàng" 
+                             class="application-image">
+                        <div class="application-content">
+                            <h3 class="application-title">Showroom & Cửa hàng</h3>
+                            <p class="application-description">Làm nổi bật sản phẩm với ánh sáng chất lượng cao, thu hút khách hàng và tăng doanh số bán hàng.</p>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>

@@ -171,6 +171,9 @@ if (!function_exists('virical_render_products_mega_menu')) {
         $html .= '<div class="mega-menu-grid">';
         
         foreach ($categories as $cat) {
+            // Only show parent categories
+            if ($cat->parent_id != 0 && $cat->parent_id !== NULL) continue;
+            
             $cat_url = home_url('/san-pham/?category=' . $cat->slug);
             $icon_url = $cat->image_url ?: 'https://via.placeholder.com/60';
             

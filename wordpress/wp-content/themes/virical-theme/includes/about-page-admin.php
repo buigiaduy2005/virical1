@@ -46,8 +46,8 @@ function aura_about_page_admin_menu() {
         30
     );
 }
-// add_action('admin_menu', 'aura_about_page_admin_menu');
-// 
+add_action('admin_menu', 'aura_about_page_admin_menu');
+
 // Admin page content
 function aura_about_page_admin_page() {
     // Handle form submission
@@ -130,7 +130,7 @@ function aura_about_page_admin_page() {
         }
         update_option('aura_about_partners', $partners);
         
-        echo '<div class="notice notice-success"><p>Settings saved!</p></div>';
+        echo '<div class="notice notice-success"><p>Cài đặt đã được lưu!</p></div>';
     }
     
     // Get current values
@@ -150,251 +150,212 @@ function aura_about_page_admin_page() {
     wp_enqueue_media();
     ?>
     
-    <div class="wrap">
-        <h1>About Page Settings</h1>
+    <style>
+        .about-admin-container { max-width: 1200px; }
+        .about-section-card { background: #fff; border: 1px solid #ccd0d4; padding: 20px; margin-bottom: 30px; border-radius: 4px; box-shadow: 0 1px 1px rgba(0,0,0,.04); }
+        .about-section-card h2 { margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee; margin-bottom: 20px; }
+        .dynamic-item { background: #f9f9f9; border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; position: relative; border-radius: 4px; }
+        .dynamic-item h3 { margin-top: 0; background: #eee; padding: 10px; margin: -20px -20px 20px -20px; border-radius: 4px 4px 0 0; }
+        .remove-item-btn { position: absolute; top: 10px; right: 10px; color: #a00; cursor: pointer; text-decoration: none; font-weight: bold; }
+        .remove-item-btn:hover { color: #f00; }
+        .image-preview { max-width: 200px; max-height: 150px; display: block; margin-top: 10px; border: 1px solid #ddd; background: #fff; padding: 5px; }
+        .image-preview:empty { display: none; }
+        .image-preview img { max-width: 100%; height: auto; display: block; }
+    </style>
+    
+    <div class="wrap about-admin-container">
+        <h1>Quản Lý Trang Giới Thiệu</h1>
         
         <form method="post" action="">
             <?php wp_nonce_field('aura_about_page_settings'); ?>
             
             <!-- Hero Section -->
-            <h2>Hero Section</h2>
-            <table class="form-table">
-                <tr>
-                    <th><label for="hero_image">Hero Background Image</label></th>
-                    <td>
-                        <input type="text" id="hero_image" name="hero_image" value="<?php echo esc_url($hero_image); ?>" class="regular-text" />
-                        <button type="button" class="button upload-image-button" data-target="#hero_image">Upload Image</button>
-                        <p class="description">Upload hero background image (recommended size: 1920x600px)</p>
-                    </td>
-                </tr>
-                <tr>
-                    <th><label for="hero_title">Hero Title</label></th>
-                    <td><input type="text" id="hero_title" name="hero_title" value="<?php echo esc_attr($hero_title); ?>" class="regular-text" /></td>
-                </tr>
-                <tr>
-                    <th><label for="hero_subtitle">Hero Subtitle</label></th>
-                    <td><input type="text" id="hero_subtitle" name="hero_subtitle" value="<?php echo esc_attr($hero_subtitle); ?>" class="regular-text" /></td>
-                </tr>
-            </table>
+            <div class="about-section-card">
+                <h2>1. Phần Đầu Trang (Hero)</h2>
+                <table class="form-table">
+                    <tr>
+                        <th><label for="hero_image">Hình nền Hero</label></th>
+                        <td>
+                            <input type="text" id="hero_image" name="hero_image" value="<?php echo esc_url($hero_image); ?>" class="regular-text" />
+                            <button type="button" class="button upload-image-button">Chọn ảnh</button>
+                            <div class="image-preview"><?php if($hero_image) echo '<img src="'.$hero_image.'">'; ?></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="hero_title">Tiêu đề chính</label></th>
+                        <td><input type="text" id="hero_title" name="hero_title" value="<?php echo esc_attr($hero_title); ?>" class="regular-text" /></td>
+                    </tr>
+                    <tr>
+                        <th><label for="hero_subtitle">Tiêu đề phụ</label></th>
+                        <td><input type="text" id="hero_subtitle" name="hero_subtitle" value="<?php echo esc_attr($hero_subtitle); ?>" class="regular-text" /></td>
+                    </tr>
+                </table>
+            </div>
             
             <!-- Introduction Section -->
-            <h2>Introduction Section</h2>
-            <table class="form-table">
-                <tr>
-                    <th><label for="intro_title">Introduction Title</label></th>
-                    <td><input type="text" id="intro_title" name="intro_title" value="<?php echo esc_attr($intro_title); ?>" class="regular-text" /></td>
-                </tr>
-                <tr>
-                    <th><label for="intro_content">Introduction Content</label></th>
-                    <td>
-                        <?php 
-                        wp_editor($intro_content, 'intro_content', array(
-                            'textarea_name' => 'intro_content',
-                            'textarea_rows' => 5,
-                            'media_buttons' => true
-                        ));
-                        ?>
-                    </td>
-                </tr>
-                <tr>
-                    <th><label for="intro_image">Introduction Image</label></th>
-                    <td>
-                        <input type="text" id="intro_image" name="intro_image" value="<?php echo esc_url($intro_image); ?>" class="regular-text" />
-                        <button type="button" class="button upload-image-button" data-target="#intro_image">Upload Image</button>
-                        <p class="description">Upload introduction image (recommended size: 600x600px)</p>
-                    </td>
-                </tr>
-            </table>
+            <div class="about-section-card">
+                <h2>2. Phần Giới Thiệu Chung</h2>
+                <table class="form-table">
+                    <tr>
+                        <th><label for="intro_title">Tiêu đề</label></th>
+                        <td><input type="text" id="intro_title" name="intro_title" value="<?php echo esc_attr($intro_title); ?>" class="regular-text" /></td>
+                    </tr>
+                    <tr>
+                        <th><label for="intro_content">Nội dung</label></th>
+                        <td>
+                            <?php 
+                            wp_editor($intro_content, 'intro_content', array(
+                                'textarea_name' => 'intro_content',
+                                'textarea_rows' => 10,
+                                'media_buttons' => true
+                            ));
+                            ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="intro_image">Hình ảnh giới thiệu</label></th>
+                        <td>
+                            <input type="text" id="intro_image" name="intro_image" value="<?php echo esc_url($intro_image); ?>" class="regular-text" />
+                            <button type="button" class="button upload-image-button">Chọn ảnh</button>
+                            <div class="image-preview"><?php if($intro_image) echo '<img src="'.$intro_image.'">'; ?></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
             
             <!-- Story Sections -->
-            <h2>Story Sections</h2>
-            <div id="story-sections-container">
-                <?php 
-                if (empty($story_sections)) {
-                    $story_sections = array(array('title' => '', 'content' => '', 'image' => ''));
-                }
-                foreach ($story_sections as $index => $section): 
-                ?>
-                <div class="story-section-item" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
-                    <h3>Section <?php echo $index + 1; ?></h3>
-                    <table class="form-table">
-                        <tr>
-                            <th><label>Title</label></th>
-                            <td><input type="text" name="story_sections[<?php echo $index; ?>][title]" value="<?php echo esc_attr($section['title']); ?>" class="regular-text" /></td>
-                        </tr>
-                        <tr>
-                            <th><label>Content</label></th>
-                            <td>
-                                <?php 
-                                wp_editor($section['content'], 'story_content_' . $index, array(
-                                    'textarea_name' => 'story_sections[' . $index . '][content]',
-                                    'textarea_rows' => 5,
-                                    'media_buttons' => true
-                                ));
-                                ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th><label>Image</label></th>
-                            <td>
-                                <input type="text" name="story_sections[<?php echo $index; ?>][image]" value="<?php echo esc_url($section['image']); ?>" class="regular-text story-image-url" />
-                                <button type="button" class="button upload-image-button">Upload Image</button>
-                            </td>
-                        </tr>
-                    </table>
-                    <button type="button" class="button remove-section">Remove Section</button>
+            <div class="about-section-card">
+                <h2>3. Các Câu Chuyện / Khối Nội Dung (Xen kẽ)</h2>
+                <div id="story-sections-container">
+                    <?php 
+                    foreach ($story_sections as $index => $section): 
+                    ?>
+                    <div class="dynamic-item">
+                        <a href="#" class="remove-item-btn remove-section">Xóa khối này</a>
+                        <h3>Khối nội dung <?php echo $index + 1; ?></h3>
+                        <table class="form-table">
+                            <tr>
+                                <th>Tiêu đề</th>
+                                <td><input type="text" name="story_sections[<?php echo $index; ?>][title]" value="<?php echo esc_attr($section['title']); ?>" class="regular-text" /></td>
+                            </tr>
+                            <tr>
+                                <th>Nội dung</th>
+                                <td><textarea name="story_sections[<?php echo $index; ?>][content]" rows="5" class="large-text"><?php echo esc_textarea($section['content']); ?></textarea></td>
+                            </tr>
+                            <tr>
+                                <th>Hình ảnh</th>
+                                <td>
+                                    <input type="text" name="story_sections[<?php echo $index; ?>][image]" value="<?php echo esc_url($section['image']); ?>" class="regular-text" />
+                                    <button type="button" class="button upload-image-button">Chọn ảnh</button>
+                                    <div class="image-preview"><?php if(!empty($section['image'])) echo '<img src="'.$section['image'].'">'; ?></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <?php endforeach; ?>
                 </div>
-                <?php endforeach; ?>
+                <button type="button" class="button button-primary" id="add-story-section">+ Thêm khối nội dung mới</button>
             </div>
-            <button type="button" class="button button-primary" id="add-story-section">Add Story Section</button>
             
             <!-- Company Values -->
-            <h2>Company Values</h2>
-            <div id="values-container">
-                <?php 
-                if (empty($company_values)) {
-                    $company_values = array(array('icon' => 'fas fa-lightbulb', 'title' => '', 'description' => ''));
-                }
-                foreach ($company_values as $index => $value): 
-                ?>
-                <div class="value-item" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
-                    <table class="form-table">
-                        <tr>
-                            <th><label>Icon Class</label></th>
-                            <td>
-                                <input type="text" name="company_values[<?php echo $index; ?>][icon]" value="<?php echo esc_attr($value['icon']); ?>" class="regular-text" />
-                                <p class="description">FontAwesome icon class (e.g., fas fa-lightbulb)</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th><label>Title</label></th>
-                            <td><input type="text" name="company_values[<?php echo $index; ?>][title]" value="<?php echo esc_attr($value['title']); ?>" class="regular-text" /></td>
-                        </tr>
-                        <tr>
-                            <th><label>Description</label></th>
-                            <td><textarea name="company_values[<?php echo $index; ?>][description]" rows="3" class="large-text"><?php echo esc_textarea($value['description']); ?></textarea></td>
-                        </tr>
-                    </table>
-                    <button type="button" class="button remove-value">Remove Value</button>
+            <div class="about-section-card">
+                <h2>4. Giá Trị Cốt Lõi</h2>
+                <div id="values-container">
+                    <?php 
+                    foreach ($company_values as $index => $value): 
+                    ?>
+                    <div class="dynamic-item">
+                        <a href="#" class="remove-item-btn remove-value">Xóa</a>
+                        <table class="form-table">
+                            <tr>
+                                <th>Icon Class</th>
+                                <td>
+                                    <input type="text" name="company_values[<?php echo $index; ?>][icon]" value="<?php echo esc_attr($value['icon']); ?>" class="regular-text" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Tiêu đề</th>
+                                <td><input type="text" name="company_values[<?php echo $index; ?>][title]" value="<?php echo esc_attr($value['title']); ?>" class="regular-text" /></td>
+                            </tr>
+                            <tr>
+                                <th>Mô tả</th>
+                                <td><textarea name="company_values[<?php echo $index; ?>][description]" rows="3" class="large-text"><?php echo esc_textarea($value['description']); ?></textarea></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <?php endforeach; ?>
                 </div>
-                <?php endforeach; ?>
+                <button type="button" class="button button-primary" id="add-value">+ Thêm giá trị mới</button>
             </div>
-            <button type="button" class="button button-primary" id="add-value">Add Value</button>
             
             <!-- Team Members -->
-            <h2>Team Members</h2>
-            <div id="team-container">
-                <?php 
-                if (empty($team_members)) {
-                    $team_members = array(array('photo' => '', 'name' => '', 'position' => '', 'bio' => ''));
-                }
-                foreach ($team_members as $index => $member): 
-                ?>
-                <div class="team-member-item" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
-                    <table class="form-table">
-                        <tr>
-                            <th><label>Photo</label></th>
-                            <td>
-                                <input type="text" name="team_members[<?php echo $index; ?>][photo]" value="<?php echo esc_url($member['photo']); ?>" class="regular-text member-photo-url" />
-                                <button type="button" class="button upload-image-button">Upload Photo</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th><label>Name</label></th>
-                            <td><input type="text" name="team_members[<?php echo $index; ?>][name]" value="<?php echo esc_attr($member['name']); ?>" class="regular-text" /></td>
-                        </tr>
-                        <tr>
-                            <th><label>Position</label></th>
-                            <td><input type="text" name="team_members[<?php echo $index; ?>][position]" value="<?php echo esc_attr($member['position']); ?>" class="regular-text" /></td>
-                        </tr>
-                        <tr>
-                            <th><label>Bio</label></th>
-                            <td><textarea name="team_members[<?php echo $index; ?>][bio]" rows="3" class="large-text"><?php echo esc_textarea($member['bio']); ?></textarea></td>
-                        </tr>
-                        <tr>
-                            <th><label>Facebook URL</label></th>
-                            <td><input type="url" name="team_members[<?php echo $index; ?>][facebook]" value="<?php echo esc_url($member['facebook'] ?? ''); ?>" class="regular-text" placeholder="https://facebook.com/username" /></td>
-                        </tr>
-                        <tr>
-                            <th><label>LinkedIn URL</label></th>
-                            <td><input type="url" name="team_members[<?php echo $index; ?>][linkedin]" value="<?php echo esc_url($member['linkedin'] ?? ''); ?>" class="regular-text" placeholder="https://linkedin.com/in/username" /></td>
-                        </tr>
-                    </table>
-                    <button type="button" class="button remove-member">Remove Member</button>
+            <div class="about-section-card">
+                <h2>5. Đội Ngũ Nhân Sự</h2>
+                <div id="team-container">
+                    <?php 
+                    foreach ($team_members as $index => $member): 
+                    ?>
+                    <div class="dynamic-item">
+                        <a href="#" class="remove-item-btn remove-member">Xóa nhân sự</a>
+                        <table class="form-table">
+                            <tr>
+                                <th>Ảnh chân dung</th>
+                                <td>
+                                    <input type="text" name="team_members[<?php echo $index; ?>][photo]" value="<?php echo esc_url($member['photo']); ?>" class="regular-text" />
+                                    <button type="button" class="button upload-image-button">Chọn ảnh</button>
+                                    <div class="image-preview"><?php if(!empty($member['photo'])) echo '<img src="'.$member['photo'].'">'; ?></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Họ tên</th>
+                                <td><input type="text" name="team_members[<?php echo $index; ?>][name]" value="<?php echo esc_attr($member['name']); ?>" class="regular-text" /></td>
+                            </tr>
+                            <tr>
+                                <th>Chức vụ</th>
+                                <td><input type="text" name="team_members[<?php echo $index; ?>][position]" value="<?php echo esc_attr($member['position']); ?>" class="regular-text" /></td>
+                            </tr>
+                            <tr>
+                                <th>Tiểu sử ngắn</th>
+                                <td><textarea name="team_members[<?php echo $index; ?>][bio]" rows="3" class="large-text"><?php echo esc_textarea($member['bio']); ?></textarea></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <?php endforeach; ?>
                 </div>
-                <?php endforeach; ?>
+                <button type="button" class="button button-primary" id="add-member">+ Thêm nhân sự mới</button>
             </div>
-            <button type="button" class="button button-primary" id="add-member">Add Team Member</button>
-            
-            <!-- Achievements -->
-            <h2>Achievements</h2>
-            <div id="achievements-container">
-                <?php 
-                if (empty($achievements)) {
-                    $achievements = array(array('number' => '', 'title' => '', 'description' => ''));
-                }
-                foreach ($achievements as $index => $achievement): 
-                ?>
-                <div class="achievement-item" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
-                    <table class="form-table">
-                        <tr>
-                            <th><label>Number</label></th>
-                            <td><input type="number" name="achievements[<?php echo $index; ?>][number]" value="<?php echo esc_attr($achievement['number']); ?>" class="small-text" /></td>
-                        </tr>
-                        <tr>
-                            <th><label>Suffix</label></th>
-                            <td>
-                                <input type="text" name="achievements[<?php echo $index; ?>][suffix]" value="<?php echo esc_attr($achievement['suffix'] ?? ''); ?>" class="small-text" />
-                                <p class="description">Optional suffix (e.g., +, %, K)</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th><label>Title</label></th>
-                            <td><input type="text" name="achievements[<?php echo $index; ?>][title]" value="<?php echo esc_attr($achievement['title']); ?>" class="regular-text" /></td>
-                        </tr>
-                        <tr>
-                            <th><label>Description</label></th>
-                            <td><input type="text" name="achievements[<?php echo $index; ?>][description]" value="<?php echo esc_attr($achievement['description']); ?>" class="regular-text" /></td>
-                        </tr>
-                    </table>
-                    <button type="button" class="button remove-achievement">Remove Achievement</button>
-                </div>
-                <?php endforeach; ?>
-            </div>
-            <button type="button" class="button button-primary" id="add-achievement">Add Achievement</button>
             
             <!-- Partners -->
-            <h2>Partners</h2>
-            <div id="partners-container">
-                <?php 
-                if (empty($partners)) {
-                    $partners = array(array('name' => '', 'logo' => ''));
-                }
-                foreach ($partners as $index => $partner): 
-                ?>
-                <div class="partner-item" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">
-                    <table class="form-table">
-                        <tr>
-                            <th><label>Partner Name</label></th>
-                            <td><input type="text" name="partners[<?php echo $index; ?>][name]" value="<?php echo esc_attr($partner['name']); ?>" class="regular-text" /></td>
-                        </tr>
-                        <tr>
-                            <th><label>Logo</label></th>
-                            <td>
-                                <input type="text" name="partners[<?php echo $index; ?>][logo]" value="<?php echo esc_url($partner['logo']); ?>" class="regular-text partner-logo-url" />
-                                <button type="button" class="button upload-image-button">Upload Logo</button>
-                                <p class="description">Partner logo (recommended size: 200x100px)</p>
-                            </td>
-                        </tr>
-                    </table>
-                    <button type="button" class="button remove-partner">Remove Partner</button>
+            <div class="about-section-card">
+                <h2>6. Đối Tác</h2>
+                <div id="partners-container">
+                    <?php 
+                    foreach ($partners as $index => $partner): 
+                    ?>
+                    <div class="dynamic-item">
+                        <a href="#" class="remove-item-btn remove-partner">Xóa đối tác</a>
+                        <table class="form-table">
+                            <tr>
+                                <th>Tên đối tác</th>
+                                <td><input type="text" name="partners[<?php echo $index; ?>][name]" value="<?php echo esc_attr($partner['name']); ?>" class="regular-text" /></td>
+                            </tr>
+                            <tr>
+                                <th>Logo</th>
+                                <td>
+                                    <input type="text" name="partners[<?php echo $index; ?>][logo]" value="<?php echo esc_url($partner['logo']); ?>" class="regular-text" />
+                                    <button type="button" class="button upload-image-button">Chọn logo</button>
+                                    <div class="image-preview"><?php if(!empty($partner['logo'])) echo '<img src="'.$partner['logo'].'">'; ?></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <?php endforeach; ?>
                 </div>
-                <?php endforeach; ?>
+                <button type="button" class="button button-primary" id="add-partner">+ Thêm đối tác mới</button>
             </div>
-            <button type="button" class="button button-primary" id="add-partner">Add Partner</button>
             
             <p class="submit">
-                <input type="submit" name="submit" class="button button-primary" value="Save Settings" />
+                <input type="submit" name="submit" class="button button-primary" value="Lưu Tất Cả Thay Đổi" />
             </p>
         </form>
     </div>
@@ -402,129 +363,79 @@ function aura_about_page_admin_page() {
     <script>
     jQuery(document).ready(function($) {
         // Media uploader
-        $('.upload-image-button').on('click', function(e) {
+        $(document).on('click', '.upload-image-button', function(e) {
             e.preventDefault();
             var button = $(this);
-            var target = button.data('target') || button.prev('input');
+            var target = button.prev('input');
+            var preview = button.next('.image-preview');
             
             var frame = wp.media({
-                title: 'Select Image',
-                button: {
-                    text: 'Use this image'
-                },
+                title: 'Chọn Hình Ảnh',
+                button: { text: 'Sử dụng hình này' },
                 multiple: false
             });
             
             frame.on('select', function() {
                 var attachment = frame.state().get('selection').first().toJSON();
-                if (typeof target === 'string') {
-                    $(target).val(attachment.url);
-                } else {
-                    target.val(attachment.url);
-                }
+                target.val(attachment.url);
+                preview.html('<img src="' + attachment.url + '">').show();
             });
             
             frame.open();
         });
         
-        // Dynamic sections
-        var storyIndex = <?php echo count($story_sections); ?>;
+        // Add dynamic sections
         $('#add-story-section').on('click', function() {
-            var html = '<div class="story-section-item" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">' +
-                '<h3>Section ' + (storyIndex + 1) + '</h3>' +
+            var index = $('#story-sections-container .dynamic-item').length;
+            var html = '<div class="dynamic-item">' +
+                '<a href="#" class="remove-item-btn remove-section">Xóa khối này</a>' +
+                '<h3>Khối nội dung mới</h3>' +
                 '<table class="form-table">' +
-                '<tr><th><label>Title</label></th><td><input type="text" name="story_sections[' + storyIndex + '][title]" class="regular-text" /></td></tr>' +
-                '<tr><th><label>Content</label></th><td><textarea name="story_sections[' + storyIndex + '][content]" rows="5" class="large-text"></textarea></td></tr>' +
-                '<tr><th><label>Image</label></th><td><input type="text" name="story_sections[' + storyIndex + '][image]" class="regular-text story-image-url" /><button type="button" class="button upload-image-button">Upload Image</button></td></tr>' +
-                '</table>' +
-                '<button type="button" class="button remove-section">Remove Section</button>' +
-                '</div>';
+                '<tr><th>Tiêu đề</th><td><input type="text" name="story_sections[' + index + '][title]" class="regular-text" /></td></tr>' +
+                '<tr><th>Nội dung</th><td><textarea name="story_sections[' + index + '][content]" rows="5" class="large-text"></textarea></td></tr>' +
+                '<tr><th>Hình ảnh</th><td><input type="text" name="story_sections[' + index + '][image]" class="regular-text" /><button type="button" class="button upload-image-button">Chọn ảnh</button><div class="image-preview"></div></td></tr>' +
+                '</table></div>';
             $('#story-sections-container').append(html);
-            storyIndex++;
+        });
+        
+        $('#add-value').on('click', function() {
+            var index = $('#values-container .dynamic-item').length;
+            var html = '<div class="dynamic-item"><a href="#" class="remove-item-btn remove-value">Xóa</a>' +
+                '<table class="form-table">' +
+                '<tr><th>Icon Class</th><td><input type="text" name="company_values[' + index + '][icon]" value="fas fa-lightbulb" class="regular-text" /></td></tr>' +
+                '<tr><th>Tiêu đề</th><td><input type="text" name="company_values[' + index + '][title]" class="regular-text" /></td></tr>' +
+                '<tr><th>Mô tả</th><td><textarea name="company_values[' + index + '][description]" rows="3" class="large-text"></textarea></td></tr>' +
+                '</table></div>';
+            $('#values-container').append(html);
+        });
+        
+        $('#add-member').on('click', function() {
+            var index = $('#team-container .dynamic-item').length;
+            var html = '<div class="dynamic-item"><a href="#" class="remove-item-btn remove-member">Xóa nhân sự</a>' +
+                '<table class="form-table">' +
+                '<tr><th>Ảnh chân dung</th><td><input type="text" name="team_members[' + index + '][photo]" class="regular-text" /><button type="button" class="button upload-image-button">Chọn ảnh</button><div class="image-preview"></div></td></tr>' +
+                '<tr><th>Họ tên</th><td><input type="text" name="team_members[' + index + '][name]" class="regular-text" /></td></tr>' +
+                '<tr><th>Chức vụ</th><td><input type="text" name="team_members[' + index + '][position]" class="regular-text" /></td></tr>' +
+                '<tr><th>Tiểu sử ngắn</th><td><textarea name="team_members[' + index + '][bio]" rows="3" class="large-text"></textarea></td></tr>' +
+                '</table></div>';
+            $('#team-container').append(html);
+        });
+        
+        $('#add-partner').on('click', function() {
+            var index = $('#partners-container .dynamic-item').length;
+            var html = '<div class="dynamic-item"><a href="#" class="remove-item-btn remove-partner">Xóa đối tác</a>' +
+                '<table class="form-table">' +
+                '<tr><th>Tên đối tác</th><td><input type="text" name="partners[' + index + '][name]" class="regular-text" /></td></tr>' +
+                '<tr><th>Logo</th><td><input type="text" name="partners[' + index + '][logo]" class="regular-text" /><button type="button" class="button upload-image-button">Chọn logo</button><div class="image-preview"></div></td></tr>' +
+                '</table></div>';
+            $('#partners-container').append(html);
         });
         
         // Remove buttons
-        $(document).on('click', '.remove-section', function() {
-            $(this).closest('.story-section-item').remove();
-        });
-        
-        $(document).on('click', '.remove-value', function() {
-            $(this).closest('.value-item').remove();
-        });
-        
-        $(document).on('click', '.remove-member', function() {
-            $(this).closest('.team-member-item').remove();
-        });
-        
-        $(document).on('click', '.remove-achievement', function() {
-            $(this).closest('.achievement-item').remove();
-        });
-        
-        // Add more dynamic sections (similar pattern for values, members, achievements)
-        var valueIndex = <?php echo count($company_values); ?>;
-        $('#add-value').on('click', function() {
-            var html = '<div class="value-item" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">' +
-                '<table class="form-table">' +
-                '<tr><th><label>Icon Class</label></th><td><input type="text" name="company_values[' + valueIndex + '][icon]" value="fas fa-lightbulb" class="regular-text" /><p class="description">FontAwesome icon class</p></td></tr>' +
-                '<tr><th><label>Title</label></th><td><input type="text" name="company_values[' + valueIndex + '][title]" class="regular-text" /></td></tr>' +
-                '<tr><th><label>Description</label></th><td><textarea name="company_values[' + valueIndex + '][description]" rows="3" class="large-text"></textarea></td></tr>' +
-                '</table>' +
-                '<button type="button" class="button remove-value">Remove Value</button>' +
-                '</div>';
-            $('#values-container').append(html);
-            valueIndex++;
-        });
-        
-        var memberIndex = <?php echo count($team_members); ?>;
-        $('#add-member').on('click', function() {
-            var html = '<div class="team-member-item" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">' +
-                '<table class="form-table">' +
-                '<tr><th><label>Photo</label></th><td><input type="text" name="team_members[' + memberIndex + '][photo]" class="regular-text member-photo-url" /><button type="button" class="button upload-image-button">Upload Photo</button></td></tr>' +
-                '<tr><th><label>Name</label></th><td><input type="text" name="team_members[' + memberIndex + '][name]" class="regular-text" /></td></tr>' +
-                '<tr><th><label>Position</label></th><td><input type="text" name="team_members[' + memberIndex + '][position]" class="regular-text" /></td></tr>' +
-                '<tr><th><label>Bio</label></th><td><textarea name="team_members[' + memberIndex + '][bio]" rows="3" class="large-text"></textarea></td></tr>' +
-                '<tr><th><label>Facebook URL</label></th><td><input type="url" name="team_members[' + memberIndex + '][facebook]" class="regular-text" placeholder="https://facebook.com/username" /></td></tr>' +
-                '<tr><th><label>LinkedIn URL</label></th><td><input type="url" name="team_members[' + memberIndex + '][linkedin]" class="regular-text" placeholder="https://linkedin.com/in/username" /></td></tr>' +
-                '</table>' +
-                '<button type="button" class="button remove-member">Remove Member</button>' +
-                '</div>';
-            $('#team-container').append(html);
-            memberIndex++;
-        });
-        
-        var achievementIndex = <?php echo count($achievements); ?>;
-        $('#add-achievement').on('click', function() {
-            var html = '<div class="achievement-item" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">' +
-                '<table class="form-table">' +
-                '<tr><th><label>Number</label></th><td><input type="number" name="achievements[' + achievementIndex + '][number]" class="small-text" /></td></tr>' +
-                '<tr><th><label>Suffix</label></th><td><input type="text" name="achievements[' + achievementIndex + '][suffix]" class="small-text" /><p class="description">Optional suffix (e.g., +, %, K)</p></td></tr>' +
-                '<tr><th><label>Title</label></th><td><input type="text" name="achievements[' + achievementIndex + '][title]" class="regular-text" /></td></tr>' +
-                '<tr><th><label>Description</label></th><td><input type="text" name="achievements[' + achievementIndex + '][description]" class="regular-text" /></td></tr>' +
-                '</table>' +
-                '<button type="button" class="button remove-achievement">Remove Achievement</button>' +
-                '</div>';
-            $('#achievements-container').append(html);
-            achievementIndex++;
-        });
-        
-        // Partners
-        var partnerIndex = <?php echo count($partners); ?>;
-        $('#add-partner').on('click', function() {
-            var html = '<div class="partner-item" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px;">' +
-                '<table class="form-table">' +
-                '<tr><th><label>Partner Name</label></th><td><input type="text" name="partners[' + partnerIndex + '][name]" class="regular-text" /></td></tr>' +
-                '<tr><th><label>Logo</label></th><td><input type="text" name="partners[' + partnerIndex + '][logo]" class="regular-text partner-logo-url" /><button type="button" class="button upload-image-button">Upload Logo</button><p class="description">Partner logo (recommended size: 200x100px)</p></td></tr>' +
-                '</table>' +
-                '<button type="button" class="button remove-partner">Remove Partner</button>' +
-                '</div>';
-            $('#partners-container').append(html);
-            partnerIndex++;
-        });
-        
-        // Remove partner handler
-        $(document).on('click', '.remove-partner', function() {
-            if (confirm('Are you sure you want to remove this partner?')) {
-                $(this).closest('.partner-item').remove();
+        $(document).on('click', '.remove-item-btn', function(e) {
+            e.preventDefault();
+            if (confirm('Bạn có chắc chắn muốn xóa mục này?')) {
+                $(this).closest('.dynamic-item').remove();
             }
         });
     });

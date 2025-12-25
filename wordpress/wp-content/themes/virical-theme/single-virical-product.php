@@ -20,7 +20,7 @@ if (!$product_slug) {
 global $wpdb;
 $table_name = $wpdb->prefix . 'virical_products';
 $product = $wpdb->get_row($wpdb->prepare(
-    "SELECT * FROM $table_name WHERE slug = %s AND status = 'publish'",
+    "SELECT * FROM $table_name WHERE slug = %s AND is_active = 1",
     $product_slug
 ));
 
@@ -741,15 +741,14 @@ $gallery = json_decode($product->gallery, true) ?: array();
                 <div class="carousel-3d-container">
                     <div class="carousel-3d-track" id="carouselTrack">
                         <?php
-                        // Lấy sản phẩm cùng category
-                        $related = $wpdb->get_results($wpdb->prepare(
-                            "SELECT * FROM $table_name 
-                            WHERE category = %s AND id != %d AND status = 'publish' 
-                            ORDER BY RAND() LIMIT 8",
-                            $product->category,
-                            $product->id
-                        ));
-                        
+                                                // Lấy sản phẩm cùng category
+                                                $related = $wpdb->get_results($wpdb->prepare(
+                                                    "SELECT * FROM $table_name 
+                                                    WHERE category = %s AND id != %d AND is_active = 1 
+                                                    ORDER BY RAND() LIMIT 8",
+                                                    $product->category,
+                                                    $product->id 
+                                                ));                        
                         if ($related): ?>
                             <?php foreach ($related as $item): ?>
                                 <div class="carousel-3d-item">
