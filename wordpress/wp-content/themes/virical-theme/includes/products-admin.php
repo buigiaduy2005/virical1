@@ -423,6 +423,11 @@ function virical_categories_page() {
                         <td>
                             <input type="text" id="cat_image" name="image_url" class="regular-text" value="<?php echo $edit_cat ? esc_attr($edit_cat->image_url) : ''; ?>">
                             <button type="button" class="button virical-media-upload" data-target="cat_image">Chọn ảnh</button>
+                            <div id="cat_image_preview" style="max-width: 150px; margin-top: 10px; border: 1px solid #ddd; padding: 5px; background: #f5f5f5;">
+                                <?php if ($edit_cat && !empty($edit_cat->image_url)): ?>
+                                    <img src="<?php echo esc_url($edit_cat->image_url); ?>" style="max-width: 100%; height: auto;">
+                                <?php endif; ?>
+                            </div>
                         </td>
                     </tr>
                     <tr>
@@ -444,7 +449,8 @@ function virical_categories_page() {
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th style="width: 50px;">ID</th>
+                    <th style="width: 80px;">Ảnh</th>
                     <th>Tên danh mục</th>
                     <th>Slug</th>
                     <th>Danh mục cha</th>
@@ -459,6 +465,13 @@ function virical_categories_page() {
                 foreach ($categories as $cat): ?>
                 <tr>
                     <td><?php echo $cat->id; ?></td>
+                    <td>
+                        <?php if (!empty($cat->image_url)): ?>
+                            <img src="<?php echo esc_url($cat->image_url); ?>" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                        <?php else: ?>
+                            <span style="color: #999; font-size: 11px;">Chưa có</span>
+                        <?php endif; ?>
+                    </td>
                     <td><strong><?php echo esc_html($cat->name); ?></strong></td>
                     <td><?php echo esc_html($cat->slug); ?></td>
                     <td><?php echo $cat->parent_id ? esc_html($cat_names[$cat->parent_id] ?? 'Unknown') : '-'; ?></td>
@@ -481,6 +494,11 @@ function virical_categories_page() {
             .on('select', function(){
                 var attachment = frame.state().get('selection').first().toJSON();
                 $('#' + target).val(attachment.url);
+                // Update preview if preview div exists
+                var previewDiv = $('#' + target + '_preview');
+                if (previewDiv.length) {
+                    previewDiv.html('<img src="'+attachment.url+'" style="max-width: 100%; height: auto;">');
+                }
             });
         });
     });

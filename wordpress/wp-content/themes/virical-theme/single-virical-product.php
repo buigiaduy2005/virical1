@@ -728,77 +728,7 @@ $gallery = json_decode($product->gallery, true) ?: array();
             </div>
         </div>
         
-        <!-- Related Products Carousel 3D -->
-        <div class="related-products">
-            <h2>SẢN PHẨM TIÊU BIỂU</h2>
-            <p style="text-align: center; color: #999; font-size: 14px; letter-spacing: 2px; margin-bottom: 40px;">EQUIPMENT SELECTOR</p>
-            
-            <div class="carousel-3d-wrapper">
-                <button class="carousel-nav carousel-prev" onclick="scrollCarousel(-1)">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                
-                <div class="carousel-3d-container">
-                    <div class="carousel-3d-track" id="carouselTrack">
-                        <?php
-                                                // Lấy sản phẩm cùng category
-                                                $related = $wpdb->get_results($wpdb->prepare(
-                                                    "SELECT * FROM $table_name 
-                                                    WHERE category = %s AND id != %d AND is_active = 1 
-                                                    ORDER BY RAND() LIMIT 8",
-                                                    $product->category,
-                                                    $product->id 
-                                                ));                        
-                        if ($related): ?>
-                            <?php foreach ($related as $item): ?>
-                                <div class="carousel-3d-item">
-                                    <a href="<?php echo home_url('/san-pham/' . $item->slug); ?>" class="product-card-3d">
-                                        <div class="product-card-image">
-                                            <img src="<?php echo esc_url($item->image_url); ?>" 
-                                                 alt="<?php echo esc_attr($item->name); ?>"
-                                                 onerror="this.src='https://via.placeholder.com/300x250/2a2a2a/666?text=No+Image'">
-                                        </div>
-                                        <div class="product-card-info">
-                                            <p class="product-new-label">new1</p>
-                                            <h3 class="product-card-name"><?php echo esc_html($item->name); ?></h3>
-                                            <button class="product-select-btn">SELECT</button>
-                                        </div>
-                                    </a>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <!-- Placeholder products if none found -->
-                            <?php for ($i = 1; $i <= 6; $i++): ?>
-                                <div class="carousel-3d-item">
-                                    <div class="product-card-3d">
-                                        <div class="product-card-image">
-                                            <img src="https://via.placeholder.com/300x250/2a2a2a/666?text=Product+<?php echo $i; ?>" 
-                                                 alt="Sản phẩm mẫu <?php echo $i; ?>">
-                                        </div>
-                                        <div class="product-card-info">
-                                            <p class="product-new-label">new<?php echo $i; ?></p>
-                                            <h3 class="product-card-name">Sản phẩm mẫu <?php echo $i; ?></h3>
-                                            <button class="product-select-btn">SELECT</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php endfor; ?>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                
-                <button class="carousel-nav carousel-next" onclick="scrollCarousel(1)">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-            
-            <!-- Carousel Indicators -->
-            <div class="carousel-indicators">
-                <span class="indicator active"></span>
-                <span class="indicator"></span>
-                <span class="indicator"></span>
-            </div>
-        </div>
+        <!-- Related Products section removed per user request -->
     </div>
 </div>
 

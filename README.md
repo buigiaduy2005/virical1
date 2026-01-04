@@ -380,3 +380,95 @@ This package has been tested and verified. All files are ready for production de
 **🤖 Generated with [Claude Code](https://claude.com/claude-code)**
 
 **Co-Authored-By: Claude <noreply@anthropic.com>**
+
+---
+
+## 🇻🇳 PHÂN TÍCH LUỒNG HOẠT ĐỘNG (VIETNAMESE)
+
+### 1. Kiến trúc Hệ thống
+Dự án vận hành dựa trên mô hình **Dockerized WordPress**, tách biệt giữa mã nguồn ứng dụng, cơ sở dữ liệu và các công cụ quản trị. Điều này giúp môi trường phát triển (Local) và môi trường chạy thật (Production) đồng nhất về mặt cấu trúc.
+
+### 2. Luồng Vận hành Chính
+
+#### A. Khởi tạo và Chạy Môi trường (Local/Docker)
+1. **Docker Compose**: Sử dụng `docker-compose.yml` để khởi tạo đồng thời container WordPress (Apache/PHP) và MariaDB/MySQL.
+2. **Data Mounting**: Thư mục `wordpress/` ở máy thật được liên kết (mount) trực tiếp vào container. Lập trình viên có thể sửa code tại máy mình và kết quả cập nhật ngay lập tức mà không cần copy file thủ công vào server ảo.
+
+#### B. Quản lý Cơ sở Dữ liệu (Database Workflow)
+1. **Dữ liệu gốc**: File `database/production_database_backup.sql` chứa toàn bộ nội dung sản phẩm và cấu hình.
+2. **Đồng bộ URL**: Đây là bước quan trọng nhất trong luồng. 
+   - Khi chạy ở máy cá nhân (Docker): Cần chạy script `fix_urls_for_docker.sql` để đưa các link ảnh về `localhost:8000`.
+   - Khi triển khai lên server thật: Cần chạy `fix_urls_for_production.sql` để cập nhật link về tên miền chính thức (ví dụ: `virical.vn`).
+
+#### C. Phát triển Giao diện (Theme Development)
+1. Mọi tùy chỉnh giao diện nằm trong `wordpress/wp-content/themes/virical-theme/`.
+2. **Custom Post Types**: Sản phẩm và Công trình được quản lý như những đối tượng dữ liệu riêng biệt, giúp việc quản trị nội dung dễ dàng hơn bài viết (Post) thông thường.
+3. **Luồng hiển thị**: 
+   - `single-product.php`: Xử lý hiển thị thông tin sản phẩm, thông số kỹ thuật và các khu vực ứng dụng thực tế.
+   - `front-page.php`: Tập hợp dữ liệu từ nhiều nguồn (Sản phẩm tiêu biểu, Banner, Tin tức) để dựng lên trang chủ.
+
+#### D. Quy trình Triển khai (Deployment)
+1. **Đóng gói**: Toàn bộ mã nguồn `wordpress/` được chuẩn bị sẵn sàng.
+2. **Cấu hình**: File `wp-config-production.php` chứa các thiết lập tối ưu về bảo mật và hiệu suất cho môi trường chạy thật.
+3. **Tự động hóa**: Thư mục `scripts/` chứa các lệnh bash giúp việc nhập dữ liệu (import database) và dọn dẹp hệ thống trở nên nhanh chóng, giảm thiểu sai sót do thao tác tay.
+
+### 3. Sơ đồ Luồng Dữ liệu (Tóm tắt)
+`Người dùng` -> `Web Server (Apache)` -> `WordPress Engine` -> `Virical Theme` -> `Database (MySQL)` -> `Kết quả hiển thị`
+
+### 4. Sơ đồ Minh họa (Flowchart)
+
+```mermaid
+graph TD
+    %% Định nghĩa các Node
+    Start((🚀 Bắt đầu))
+    
+    subgraph LOCAL [💻 Môi trường Local / Docker]
+        direction TB
+        Init[Khởi chạy Docker Compose]
+        DevCode[Phát triển Theme & Code]
+        DevContent[Nhập liệu Sản phẩm/Tin tức]
+        FixUrlLocal[Chạy fix_urls_for_docker]
+    end
+
+    subgraph PACKAGING [📦 Đóng gói & Chuẩn bị]
+        BackupDB[Export Database .sql]
+        CheckSource[Kiểm tra folder wordpress/]
+    end
+
+    subgraph PROD [☁️ Môi trường Production]
+        Upload[Upload Source Code lên Host]
+        Import[Import Database vào MySQL]
+        FixUrlProd[Chạy fix_urls_for_production]
+        Config[Cấu hình wp-config.php]
+        Live((🌐 Website Hoạt động))
+    end
+
+    %% Luồng đi
+    Start --> Init
+    Init --> DevCode
+    Init --> DevContent
+    
+    DevCode --> CheckSource
+    DevContent --> BackupDB
+    
+    FixUrlLocal -.-> DevCode
+    
+    CheckSource --> Upload
+    BackupDB --> Import
+    
+    Upload --> Config
+    Import --> FixUrlProd
+    
+    FixUrlProd --> Live
+    Config --> Live
+
+    %% Style cho đẹp
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
+    classDef green fill:#d5f5e3,stroke:#2ecc71,stroke-width:2px;
+    classDef blue fill:#d6eaf8,stroke:#3498db,stroke-width:2px;
+    classDef orange fill:#fdebd0,stroke:#e67e22,stroke-width:2px;
+    
+    class Live green;
+    class FixUrlProd,Config,Upload,Import blue;
+    class DevCode,DevContent,Init orange;
+```

@@ -1331,6 +1331,10 @@ if (empty($gallery)) {
         </div>
     </section>
     
+    <?php 
+    $apps = !empty($product->applications) ? json_decode($product->applications, true) : [];
+    if (!empty($apps)):
+    ?>
     <!-- Applications Section -->
     <section class="applications-section">
         <div class="applications-container">
@@ -1338,8 +1342,6 @@ if (empty($gallery)) {
             
             <div class="applications-grid">
                 <?php 
-                $apps = !empty($product->applications) ? json_decode($product->applications, true) : [];
-                if (!empty($apps)):
                     foreach ($apps as $app):
                         if (empty($app['title']) && empty($app['image'])) continue;
                 ?>
@@ -1358,125 +1360,14 @@ if (empty($gallery)) {
                     </div>
                 <?php 
                     endforeach;
-                else: 
                 ?>
-                    <!-- Fallback placeholders if no dynamic apps -->
-                    <div class="application-item">
-                        <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=Kh%C3%B4ng+gian+s%E1%BB%91ng" 
-                             alt="Không gian sống" 
-                             class="application-image">
-                        <div class="application-content">
-                            <h3 class="application-title">Không gian sống</h3>
-                            <p class="application-description">Tạo điểm nhấn cho phòng khách, phòng ngủ với ánh sáng ấm áp, tạo không gian thư giãn và thoải mái.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="application-item">
-                        <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=V%C4%83n+ph%C3%B2ng" 
-                             alt="Văn phòng hiện đại" 
-                             class="application-image">
-                        <div class="application-content">
-                            <h3 class="application-title">Văn phòng hiện đại</h3>
-                            <p class="application-description">Chiếu sáng chuyên nghiệp cho không gian làm việc, tăng hiệu suất và tạo môi trường làm việc lý tưởng.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="application-item">
-                        <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=Showroom" 
-                             alt="Showroom & Cửa hàng" 
-                             class="application-image">
-                        <div class="application-content">
-                            <h3 class="application-title">Showroom & Cửa hàng</h3>
-                            <p class="application-description">Làm nổi bật sản phẩm với ánh sáng chất lượng cao, thu hút khách hàng và tăng doanh số bán hàng.</p>
-                        </div>
-                    </div>
-                <?php endif; ?>
             </div>
         </div>
     </section>
+    <?php endif; ?>
     
     <!-- Related Products Carousel 3D -->
-    <section class="related-products-section">
-        <div class="related-products-container">
-            <h2 class="section-title">SẢN PHẨM TIÊU BIỂU</h2>
-            <p class="section-subtitle">EQUIPMENT SELECTOR</p>
-            
-            <div class="carousel-3d-wrapper">
-                <button class="carousel-nav carousel-prev" onclick="scrollCarousel(-1)">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                
-                <div class="carousel-3d-container">
-                    <div class="carousel-3d-track" id="carouselTrack">
-                        <?php
-                        // Get related products from same category
-                        $related_query = "SELECT * FROM {$wpdb->prefix}virical_products 
-                                         WHERE category = %s 
-                                         AND id != %d 
-                                         AND is_active = 1 
-                                         ORDER BY is_featured DESC, RAND() 
-                                         LIMIT 8";
-                        
-                        $related_products = $wpdb->get_results($wpdb->prepare($related_query, $product->category, $product->id));
-                        
-                        if (!empty($related_products)) {
-                            foreach ($related_products as $index => $related): ?>
-                                <div class="carousel-3d-item">
-                                    <a href="<?php echo home_url('/san-pham/' . $related->slug . '/'); ?>" class="product-card-3d">
-                                        <div class="product-card-image">
-                                            <?php if (!empty($related->image_url)): ?>
-                                                <img src="<?php echo esc_url($related->image_url); ?>" 
-                                                     alt="<?php echo esc_attr($related->name); ?>"
-                                                     onerror="this.src='https://via.placeholder.com/300x250/2a2a2a/666?text=No+Image'">
-                                            <?php else: ?>
-                                                <img src="https://via.placeholder.com/300x250/2a2a2a/666?text=No+Image" 
-                                                     alt="<?php echo esc_attr($related->name); ?>">
-                                            <?php endif; ?>
-                                        </div>
-                                        <div class="product-card-info">
-                                            <p class="product-new-label">new1</p>
-                                            <h3 class="product-card-name"><?php echo esc_html($related->name); ?></h3>
-                                            <button class="product-select-btn">SELECT</button>
-                                        </div>
-                                    </a>
-                                </div>
-                            <?php endforeach;
-                        } else {
-                            // Show placeholder products if no related products found
-                            for ($i = 1; $i <= 6; $i++):
-                                ?>
-                                <div class="carousel-3d-item">
-                                    <div class="product-card-3d">
-                                        <div class="product-card-image">
-                                            <img src="https://via.placeholder.com/300x250/2a2a2a/666?text=Product+<?php echo $i; ?>" 
-                                                 alt="Sản phẩm mẫu <?php echo $i; ?>">
-                                        </div>
-                                        <div class="product-card-info">
-                                            <p class="product-new-label">new<?php echo $i; ?></p>
-                                            <h3 class="product-card-name">Sản phẩm mẫu <?php echo $i; ?></h3>
-                                            <button class="product-select-btn">SELECT</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php endfor;
-                        }
-                        ?>
-                    </div>
-                </div>
-                
-                <button class="carousel-nav carousel-next" onclick="scrollCarousel(1)">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-            
-            <!-- Carousel Indicators -->
-            <div class="carousel-indicators">
-                <span class="indicator active"></span>
-                <span class="indicator"></span>
-                <span class="indicator"></span>
-            </div>
-        </div>
-    </section>
+    <!-- Related Products section removed per user request -->
 </main>
 
 <script>

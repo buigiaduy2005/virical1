@@ -175,7 +175,15 @@ if (!function_exists('virical_render_products_mega_menu')) {
             if ($cat->parent_id != 0 && $cat->parent_id !== NULL) continue;
             
             $cat_url = home_url('/san-pham/?category=' . $cat->slug);
-            $icon_url = $cat->image_url ?: 'https://via.placeholder.com/60';
+            
+            // Validate image_url - check if empty or invalid
+            $icon_url = '';
+            if (!empty($cat->image_url) && filter_var($cat->image_url, FILTER_VALIDATE_URL)) {
+                $icon_url = $cat->image_url;
+            } else {
+                // Use a default placeholder or category icon
+                $icon_url = get_template_directory_uri() . '/assets/images/placeholder.jpg';
+            }
             
             $html .= '<div class="mega-menu-item">';
             $html .= '<a href="' . esc_url($cat_url) . '" class="mega-menu-item-link">';

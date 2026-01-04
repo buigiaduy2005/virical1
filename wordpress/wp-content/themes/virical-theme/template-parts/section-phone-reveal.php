@@ -102,8 +102,8 @@ for ($i = 4; $i <= 6; $i++) {
 .phone-reveal-section {
     position: relative;
     width: 100%;
-    /* Create scroll space */
-    height: 300vh; 
+    /* Create scroll space - reduced for faster transition */
+    height: 100vh; 
     background-color: #FFFFFF;
     background-size: cover;
     background-position: center;
@@ -159,16 +159,15 @@ for ($i = 4; $i <= 6; $i++) {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 25; /* Above phone for testing */
-    opacity: 1.0; /* Fully visible for testing */
+    transform: translate(-50%, -50%) scale(0.5);
+    z-index: 25;
+    opacity: 0; /* Hidden initially, will fade in after title disappears */
     transition: opacity 0.5s ease-out;
-    width: 150px; /* Increased from 120px */
+    width: 150px;
     height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 0, 0, 0.1); /* Red tint for debugging */
 }
 
 .phone-center-logo img {
@@ -475,115 +474,94 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!section) return;
 
     const isMobile = window.innerWidth <= 991;
+    let hasTriggered = false;
+    let animationStartTime = null;
 
     function handleScroll() {
         const rect = section.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
         
-        const start = 0; 
-        const end = rect.height - viewportHeight; 
+        // Check if section is in viewport
+        const isInViewport = rect.top < viewportHeight * 0.8 && rect.bottom > 0;
         
-        if (end <= 0) return;
-
-        const scrollY = -rect.top;
-        let rawProgress = scrollY / end;
-        let progress = Math.min(Math.max(rawProgress, 0), 1);
-
-        // Title Animation
-        if (title) {
-            const titleProgress = Math.min(progress / 0.3, 1);
-            const titleOpacity = 1 - titleProgress;
-            const titleScale = 1 - (titleProgress * 0.5);
-            const titleY = titleProgress * -50;
-            
-            title.style.opacity = titleOpacity;
-            title.style.transform = `translate(-50%, calc(-50% + ${titleY}px)) scale(${titleScale})`;
-            title.style.zIndex = titleProgress > 0.5 ? 15 : 25;
+        // Auto-trigger timed animation sequence when section enters viewport
+        if (isInViewport && !hasTriggered) {
+            hasTriggered = true;
+            animationStartTime = Date.now();
+            startTimedSequence();
         }
+    }
+    
+    function startTimedSequence() {
+        // Step 1: Show title on phone initially (0-0.5 seconds)
+        // Title is already visible by default
         
-        // Center Logo Animation
-        if (centerLogo) {
-            const logoStart = 0.1;
-            const logoEnd = 0.4;
-            let logoProgress = 0;
-            
-            if (progress < logoStart) {
-                logoProgress = 0;
-            } else if (progress > logoEnd) {
-                logoProgress = 1;
-            } else {
-                logoProgress = (progress - logoStart) / (logoEnd - logoStart);
+        // Step 2: After 0.5 seconds, fade out title
+        setTimeout(() => {
+            if (title) {
+                title.style.transition = 'all 0.8s ease-out';
+                title.style.opacity = '0';
+                title.style.transform = 'translate(-50%, calc(-50% - 100px)) scale(0.5)';
+                title.style.zIndex = '5';
             }
-            
-            centerLogo.style.opacity = 0.3 + (logoProgress * 0.7);
-        }
+        }, 500); // 0.5 seconds
         
-        // Phone Animation
-        if (phone) {
-            if (isMobile) {
-                // Mobile: just subtle scale
-                phone.style.transform = `scale(${1 + progress * 0.02})`;
-            } else {
-                phone.style.transform = `scale(${1 + progress * 0.05}) rotateY(${progress * 5}deg)`;
+        // Step 3: After 1 second, fade in center logo
+        setTimeout(() => {
+            if (centerLogo) {
+                centerLogo.style.transition = 'all 1s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                centerLogo.style.opacity = '1';
+                centerLogo.style.transform = 'translate(-50%, -50%) scale(1)';
             }
-        }
+        }, 1000); // 1 second
         
-        // Features Animation
+        // Step 4: After 1.5 seconds, spread out the 6 feature boxes
+        setTimeout(() => {
+            triggerSpreadAnimation();
+        }, 1500); // 1.5 seconds
+    }
+    
+    function triggerSpreadAnimation() {
+        const spreadDistanceX = 350;
+        const spreadDistanceY = 40;
+        
         if (isMobile) {
-            // Mobile: Simple fade in with translateY
-            const featuresStart = 0.15;
-            const featuresEnd = 0.6;
-            let featProgress = (progress - featuresStart) / (featuresEnd - featuresStart);
-            featProgress = Math.min(Math.max(featProgress, 0), 1);
-            
-            const eased = featProgress < 0.5 ? 2 * featProgress * featProgress : 1 - Math.pow(-2 * featProgress + 2, 2) / 2;
-            const opacity = eased;
-            const translateY = 20 * (1 - eased); // 20px -> 0px
-            
-            leftFeatures.forEach(item => {
-                item.style.opacity = opacity;
-                item.style.transform = `translateY(${translateY}px)`;
-            });
-            
-            rightFeatures.forEach(item => {
-                item.style.opacity = opacity;
-                item.style.transform = `translateY(${translateY}px)`;
-            });
-        } else {
-            // Desktop: horizontal spread with stagger
-            const spreadDistanceX = 350;
-            const spreadDistanceY = 40;
-            
+            // Mobile: Simple fade in
             leftFeatures.forEach((item, index) => {
-                const startP = index * 0.15;
-                const endP = 0.6 + (index * 0.1); 
-                
-                let itemProgress = (progress - startP) / (endP - startP);
-                itemProgress = Math.min(Math.max(itemProgress, 0), 1);
-                
-                const eased = itemProgress < 0.5 ? 2 * itemProgress * itemProgress : 1 - Math.pow(-2 * itemProgress + 2, 2) / 2;
-                
-                const x = -spreadDistanceX * eased;
-                const y = (index - 1) * spreadDistanceY * eased;
-                
-                item.style.opacity = eased;
-                item.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${0.8 + 0.2 * eased})`;
+                setTimeout(() => {
+                    item.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0px)';
+                }, index * 100);
             });
             
             rightFeatures.forEach((item, index) => {
-                const startP = index * 0.15;
-                const endP = 0.6 + (index * 0.1);
-                
-                let itemProgress = (progress - startP) / (endP - startP);
-                itemProgress = Math.min(Math.max(itemProgress, 0), 1);
-                
-                const eased = itemProgress < 0.5 ? 2 * itemProgress * itemProgress : 1 - Math.pow(-2 * itemProgress + 2, 2) / 2;
-                
-                const x = spreadDistanceX * eased;
-                const y = (index - 1) * spreadDistanceY * eased;
-                
-                item.style.opacity = eased;
-                item.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${0.8 + 0.2 * eased})`;
+                setTimeout(() => {
+                    item.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0px)';
+                }, index * 100);
+            });
+        } else {
+            // Desktop: Spread animation with bounce effect
+            leftFeatures.forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.transition = 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    const x = -spreadDistanceX;
+                    const y = (index - 1) * spreadDistanceY;
+                    item.style.opacity = '1';
+                    item.style.transform = `translate3d(${x}px, ${y}px, 0) scale(1)`;
+                }, index * 150);
+            });
+            
+            rightFeatures.forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.transition = 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    const x = spreadDistanceX;
+                    const y = (index - 1) * spreadDistanceY;
+                    item.style.opacity = '1';
+                    item.style.transform = `translate3d(${x}px, ${y}px, 0) scale(1)`;
+                }, index * 150);
             });
         }
     }

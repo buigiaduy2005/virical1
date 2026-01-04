@@ -163,12 +163,12 @@ foreach ($products as $product) {
     .category-link {
         flex: 1;
         display: block;
-        padding: 5px 20px;
+        padding: 4px 15px;
         color: #333;
         text-decoration: none;
-        font-size: 0.95rem;
+        font-size: 0.85rem;
         font-weight: 500;
-        line-height: 1.1;
+        line-height: 1.2;
     }
     
     .category-item.active-parent > .category-link-wrapper {

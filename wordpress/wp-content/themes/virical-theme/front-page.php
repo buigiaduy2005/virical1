@@ -1194,6 +1194,7 @@ body {
     width: 350px;
     transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     transform-style: preserve-3d;
+    backface-visibility: hidden;
 }
 
 /* Product Card Styling */
@@ -1458,32 +1459,13 @@ body {
         width: 90%;
         max-width: 320px;
         left: 50%;
-        transform: translateX(-50%) !important;
+        /* Let JavaScript control visibility via inline styles */
     }
     
-    /* Mobile: Show only active item, hide all others */
-    .carousel-3d-item[data-index="0"],
-    .carousel-3d-item[data-index="1"],
-    .carousel-3d-item[data-index="2"],
-    .carousel-3d-item[data-index="4"],
-    .carousel-3d-item[data-index="5"],
-    .carousel-3d-item[data-index="6"],
-    .carousel-3d-item[data-index="7"],
-    .carousel-3d-item[data-index="8"],
-    .carousel-3d-item[data-index="9"],
-    .carousel-3d-item[data-index="10"] {
-        opacity: 0 !important;
+    /* Mobile: Hide items with very low opacity (set by JS) */
+    .carousel-3d-item[style*="opacity: 0"],
+    .carousel-3d-item[style*="opacity:0"] {
         pointer-events: none !important;
-        transform: translateX(-50%) scale(0.8) !important;
-        z-index: 0 !important;
-    }
-    
-    /* Show only the center item */
-    .carousel-3d-item[data-index="3"] {
-        opacity: 1 !important;
-        pointer-events: all !important;
-        transform: translateX(-50%) scale(1) !important;
-        z-index: 5 !important;
     }
     
     .product-3d-card {
@@ -1620,52 +1602,62 @@ jQuery(document).ready(function($) {
         updatePositions: function() {
             const items = $('.carousel-3d-item');
             const total = this.totalItems;
-            
-            console.log('Updating positions, total items:', total, 'current index:', this.currentIndex);
+            const isMobile = window.innerWidth <= 768;
             
             items.each((index, item) => {
                 const $item = $(item);
-                // Calculate position relative to current center
                 let diff = index - this.currentIndex;
                 
-                // Normalize diff to be between -total/2 and +total/2
                 if (diff > total / 2) diff -= total;
                 if (diff < -total / 2) diff += total;
                 
-                // Calculate curved arc position based on diff
                 let x, rotateY, z, scale, opacity, zIndex;
                 
-                if (diff === 0) {
-                    // Center item
-                    x = 0;
-                    rotateY = 0;
-                    z = 0;
-                    scale = 1.15;
-                    opacity = 1;
-                    zIndex = 10;
-                } else {
-                    // Side items - create curved arc
-                    const absDiff = Math.abs(diff);
-                    const direction = diff > 0 ? 1 : -1;
+                if (isMobile) {
+                    // Mobile: Show only center item
+                    if (diff === 0) {
+                        opacity = 1;
+                        zIndex = 10;
+                        $item.css('transform', 'translateX(-50%) scale(1)');
+                    } else {
+                        opacity = 0;
+                        zIndex = 0;
+                        $item.css('transform', 'translateX(-50%) scale(0.8)');
+                    }
                     
-                    // Calculate position along arc
-                    x = direction * (200 + absDiff * 180);
-                    rotateY = direction * (10 + absDiff * 12);
-                    z = -(absDiff * 60);
-                    scale = Math.max(0.7, 1 - absDiff * 0.15);
-                    opacity = Math.max(0.3, 1 - absDiff * 0.25);
-                    zIndex = 10 - absDiff;
+                    $item.css({
+                        'opacity': opacity,
+                        'z-index': zIndex,
+                        'pointer-events': opacity > 0 ? 'auto' : 'none'
+                    });
+                } else {
+                    // Desktop: curved arc effect
+                    if (diff === 0) {
+                        x = 0;
+                        rotateY = 0;
+                        z = 0;
+                        scale = 1.15;
+                        opacity = 1;
+                        zIndex = 10;
+                    } else {
+                        const absDiff = Math.abs(diff);
+                        const direction = diff > 0 ? 1 : -1;
+                        
+                        x = direction * (200 + absDiff * 180);
+                        rotateY = -direction * (10 + absDiff * 12);
+                        z = -(absDiff * 60);
+                        scale = Math.max(0.7, 1 - absDiff * 0.15);
+                        opacity = Math.max(0.3, 1 - absDiff * 0.25);
+                        zIndex = 10 - absDiff;
+                    }
+                    
+                    $item.css({
+                        'transform': `translateX(${x}px) rotateY(${rotateY}deg) translateZ(${z}px) scale(${scale})`,
+                        'opacity': opacity,
+                        'z-index': zIndex,
+                        'pointer-events': opacity > 0.2 ? 'auto' : 'none'
+                    });
                 }
-                
-                // Apply transforms
-                $item.css({
-                    'transform': `translateX(${x}px) rotateY(${rotateY}deg) translateZ(${z}px) scale(${scale})`,
-                    'opacity': opacity,
-                    'z-index': zIndex,
-                    'pointer-events': opacity > 0.2 ? 'auto' : 'none'
-                });
-                
-                console.log(`Item ${index}: diff=${diff}, x=${x}, rotateY=${rotateY}, scale=${scale}`);
             });
             
             // Update indicators
